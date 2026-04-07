@@ -17,11 +17,7 @@ function findPhaseIdByCode(code) {
 const defaultPhaseId = phaseOptions[0]?.id ?? null;
 
 // State
-const jobs = [
-    { id: 'D25746.02.03006.P2A', desc: 'Concrete Labor', phaseId: findPhaseIdByCode('INT') },
-    { id: 'D25746.02.03005.OTF', desc: 'Concrete Labor', phaseId: findPhaseIdByCode('OTF') },
-    { id: 'D25726.01.06005', desc: 'Misc. Carpenter Labor', phaseId: findPhaseIdByCode('DECON') }
-];
+const jobs = [];
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -58,8 +54,6 @@ function renderTable() {
         jobTd.className = 'job-col';
         jobTd.innerHTML = `
             <div class="job-cell-content">
-                <span class="job-id">${job.id}</span>
-                <span class="job-desc">${job.desc}</span>
                 <select class="phase-select" data-row="${rowIdx}" ${phaseOptions.length ? '' : 'disabled'}>
                     ${phaseOptions.length
                         ? phaseOptions
@@ -144,8 +138,8 @@ function openModal(rowIdx, colIdx, job, day) {
     const existing = timesheetData[cellKey];
 
     const phase = getPhaseById(job.phaseId);
-    const phaseLabel = phase ? ` (${phaseDisplay(phase)})` : '';
-    modalSubtitle.innerText = `${job.desc}${phaseLabel} - ${day}`;
+    const lineLabel = phase ? phaseDisplay(phase) : 'No Phase Selected';
+    modalSubtitle.innerText = `${lineLabel} - ${day}`;
 
     if (existing) {
         hourSlider.value = existing.hours;
@@ -215,15 +209,7 @@ modal.addEventListener('click', (e) => {
 });
 
 addJobBtn.addEventListener('click', () => {
-    const jobId = (window.prompt('Enter Job Number', '') || '').trim();
-    if (!jobId) {
-        return;
-    }
-
-    const category = (window.prompt('Enter Category', 'General Labor') || 'General Labor').trim();
     jobs.push({
-        id: jobId,
-        desc: category,
         phaseId: defaultPhaseId,
     });
     renderTable();

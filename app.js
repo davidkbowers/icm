@@ -1,9 +1,5 @@
 // State
-const jobs = [
-    { id: 'D25746.02.03006.P2A', desc: 'INT - Concrete Labor' },
-    { id: 'D25746.02.03005.OTF', desc: 'Concrete Labor' },
-    { id: 'D25726.01.06005', desc: 'Decon - Misc. Carpenter Labor' }
-];
+const jobs = [];
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -16,6 +12,7 @@ let activeCell = null; // { rowIdx, colIdx }
 // DOM Elements
 const tbody = document.getElementById('timesheet-body');
 const totalsRow = document.getElementById('daily-totals-row');
+const addJobBtn = document.getElementById('add-job-btn');
 const modal = document.getElementById('entry-modal');
 const closeModalBtn = document.getElementById('close-modal');
 const clearEntryBtn = document.getElementById('clear-entry');
@@ -179,6 +176,11 @@ clearEntryBtn.addEventListener('click', () => {
 closeModalBtn.addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => {
     if(e.target === modal) closeModal();
+});
+
+addJobBtn.addEventListener('click', () => {
+    jobs.push({ id: '', desc: '' });
+    renderTable();
 });
 
 function showToast() {
