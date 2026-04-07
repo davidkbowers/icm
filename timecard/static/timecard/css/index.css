@@ -232,6 +232,22 @@ body {
     font-weight: 500;
 }
 
+.phase-select {
+    margin-top: 0.45rem;
+    width: 100%;
+    padding: 0.35rem 0.45rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.25);
+    color: var(--text-main);
+    font-size: 0.8rem;
+}
+
+.phase-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
 .day-cell {
     text-align: center;
     cursor: pointer;

@@ -1,8 +1,26 @@
+const phaseDataEl = document.getElementById('phase-options-data');
+const phaseOptions = phaseDataEl ? JSON.parse(phaseDataEl.textContent) : [];
+
+function phaseDisplay(phase) {
+    return phase.name ? `${phase.code} - ${phase.name}` : phase.code;
+}
+
+function getPhaseById(phaseId) {
+    return phaseOptions.find((phase) => phase.id === phaseId) || null;
+}
+
+function findPhaseIdByCode(code) {
+    const match = phaseOptions.find((phase) => phase.code.toLowerCase() === code.toLowerCase());
+    return match ? match.id : (phaseOptions[0]?.id ?? null);
+}
+
+const defaultPhaseId = phaseOptions[0]?.id ?? null;
+
 // State
 const jobs = [
-    { id: 'D25746.02.03006.P2A', desc: 'INT - Concrete Labor' },
-    { id: 'D25746.02.03005.OTF', desc: 'Concrete Labor' },
-    { id: 'D25726.01.06005', desc: 'Decon - Misc. Carpenter Labor' }
+    { id: 'D25746.02.03006.P2A', desc: 'Concrete Labor', phaseId: findPhaseIdByCode('INT') },
+    { id: 'D25746.02.03005.OTF', desc: 'Concrete Labor', phaseId: findPhaseIdByCode('OTF') },
+    { id: 'D25726.01.06005', desc: 'Misc. Carpenter Labor', phaseId: findPhaseIdByCode('DECON') }
 ];
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -16,6 +34,7 @@ let activeCell = null; // { rowIdx, colIdx }
 // DOM Elements
 const tbody = document.getElementById('timesheet-body');
 const totalsRow = document.getElementById('daily-totals-row');
+const addJobBtn = document.getElementById('add-job-btn');
 const modal = document.getElementById('entry-modal');
 const closeModalBtn = document.getElementById('close-modal');
 const clearEntryBtn = document.getElementById('clear-entry');
@@ -41,8 +60,20 @@ function renderTable() {
             <div class="job-cell-content">
                 <span class="job-id">${job.id}</span>
                 <span class="job-desc">${job.desc}</span>
+                <select class="phase-select" data-row="${rowIdx}" ${phaseOptions.length ? '' : 'disabled'}>
+                    ${phaseOptions.length
+                        ? phaseOptions
+                            .map((phase) => `<option value="${phase.id}" ${phase.id === job.phaseId ? 'selected' : ''}>${phaseDisplay(phase)}</option>`)
+                            .join('')
+                        : '<option value="">No phases configured</option>'
+                    }
+                </select>
             </div>
         `;
+        const phaseSelect = jobTd.querySelector('.phase-select');
+        phaseSelect.addEventListener('change', (event) => {
+            jobs[rowIdx].phaseId = Number.parseInt(event.target.value, 10) || null;
+        });
         tr.appendChild(jobTd);
 
         // Day Columns
@@ -112,7 +143,9 @@ function openModal(rowIdx, colIdx, job, day) {
     const cellKey = `${rowIdx}_${colIdx}`;
     const existing = timesheetData[cellKey];
 
-    modalSubtitle.innerText = `${job.desc} - ${day}`;
+    const phase = getPhaseById(job.phaseId);
+    const phaseLabel = phase ? ` (${phaseDisplay(phase)})` : '';
+    modalSubtitle.innerText = `${job.desc}${phaseLabel} - ${day}`;
 
     if (existing) {
         hourSlider.value = existing.hours;
@@ -179,6 +212,21 @@ clearEntryBtn.addEventListener('click', () => {
 closeModalBtn.addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
+});
+
+addJobBtn.addEventListener('click', () => {
+    const jobId = (window.prompt('Enter Job Number', '') || '').trim();
+    if (!jobId) {
+        return;
+    }
+
+    const category = (window.prompt('Enter Category', 'General Labor') || 'General Labor').trim();
+    jobs.push({
+        id: jobId,
+        desc: category,
+        phaseId: defaultPhaseId,
+    });
+    renderTable();
 });
 
 function showToast() {
