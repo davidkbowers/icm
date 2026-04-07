@@ -23,7 +23,13 @@
             <div class="employee-info">
                 <div class="info-group">
                     <label>Employee</label>
-                    <div class="info-value">Enrique Yanez</div>
+                    <div class="info-value">
+                        {% if request.user.first_name or request.user.last_name %}
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                        {% else %}
+                            {{ request.user.email }}
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="info-group">
                     <label>Period Ending</label>

@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICM Registration</title>
+    <link rel="stylesheet" href="{% static 'users/css/index.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="app-container" style="max-width: 560px; min-height: 100vh; justify-content: center;">
+        <section class="glass-effect" style="padding: 2rem;">
+            <div class="brand" style="margin-bottom: 1.5rem;">
+                <div class="brand-text">
+                    <h1>ICM</h1>
+                    <span>Industrial Construction Managers</span>
+                </div>
+            </div>
+
+            <h2 style="margin-bottom: 1rem; font-weight: 600;">Create Account</h2>
+
+            {% if form.non_field_errors %}
+                <div style="margin-bottom: 1rem; padding: 0.75rem; border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; color: #fecaca; background: rgba(239, 68, 68, 0.15);">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label for="{{ form.email.id_for_label }}" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Email</label>
+                        {{ form.email }}
+                        {% for error in form.email.errors %}<small style="color:#fecaca;">{{ error }}</small>{% endfor %}
+                    </div>
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">First Name</label>
+                        {{ form.first_name }}
+                        {% for error in form.first_name.errors %}<small style="color:#fecaca;">{{ error }}</small>{% endfor %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Last Name</label>
+                        {{ form.last_name }}
+                        {% for error in form.last_name.errors %}<small style="color:#fecaca;">{{ error }}</small>{% endfor %}
+                    </div>
+                    <div>
+                        <label for="{{ form.password1.id_for_label }}" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Password</label>
+                        {{ form.password1 }}
+                        {% for error in form.password1.errors %}<small style="color:#fecaca;">{{ error }}</small>{% endfor %}
+                    </div>
+                    <div>
+                        <label for="{{ form.password2.id_for_label }}" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Confirm Password</label>
+                        {{ form.password2 }}
+                        {% for error in form.password2.errors %}<small style="color:#fecaca;">{{ error }}</small>{% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="justify-content: center; margin-top: 0.5rem;">Create Account</button>
+                </div>
+            </form>
+
+            <p style="margin-top: 1rem; color: var(--text-muted); text-align: center;">
+                Already have an account?
+                <a href="{% url 'home' %}" style="color: var(--accent); font-weight: 600; text-decoration: none;">Back to login</a>
+            </p>
+        </section>
+    </main>
+
+    <style>
+        input[type="email"],
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        input[type="email"]:focus,
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</body>
+</html>
