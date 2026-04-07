@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'timecard',
 ]
 
 MIDDLEWARE = [
@@ -119,4 +120,4 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = 'home'
-LOGIN_REDIRECT_URL = 'timesheet'
+LOGIN_REDIRECT_URL = 'timecard'
