@@ -5,17 +5,16 @@ from django.urls import reverse
 class work_time(models.Model):
 
     # Fields
-    work_type = models.IntegerField()
-    hours_worked = models.IntegerField()
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    day_of_week = models.IntegerField()
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    job_number = models.TextField(max_length=100)
-    job_description = models.TextField(max_length=100)
+    employee_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    hours_worked = models.IntegerField()
+    work_type = models.IntegerField()   # ST, OT, DT
+    rate_modifier = models.FloatField() # 1.0, 1.5, 2.0
+    job_number_phase_cat_desc = models.TextField(max_length=100) # D25746.01.03005.Misc. Concrete Field Labor			
+    work_date = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
-    job_phase = models.TextField(max_length=100)
-    job_category = models.TextField(max_length=100)
-
+ 
     class Meta:
         pass
 
