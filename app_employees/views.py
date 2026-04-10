@@ -4,30 +4,30 @@ from . import models
 from . import forms
 
 
-class emp_typeListView(generic.ListView):
-    model = models.emp_type
-    form_class = forms.emp_typeForm
+class emp_tradeListView(generic.ListView):
+    model = models.emp_trade
+    form_class = forms.emp_tradeForm
 
 
-class emp_typeCreateView(generic.CreateView):
-    model = models.emp_type
-    form_class = forms.emp_typeForm
+class emp_tradeCreateView(generic.CreateView):
+    model = models.emp_trade
+    form_class = forms.emp_tradeForm
 
 
-class emp_typeDetailView(generic.DetailView):
-    model = models.emp_type
-    form_class = forms.emp_typeForm
+class emp_tradeDetailView(generic.DetailView):
+    model = models.emp_trade
+    form_class = forms.emp_tradeForm
 
 
-class emp_typeUpdateView(generic.UpdateView):
-    model = models.emp_type
-    form_class = forms.emp_typeForm
+class emp_tradeUpdateView(generic.UpdateView):
+    model = models.emp_trade
+    form_class = forms.emp_tradeForm
     pk_url_kwarg = "pk"
 
 
-class emp_typeDeleteView(generic.DeleteView):
-    model = models.emp_type
-    success_url = reverse_lazy("app_employee_emp_type_list")
+class emp_tradeDeleteView(generic.DeleteView):
+    model = models.emp_trade
+    success_url = reverse_lazy("app_employee_emp_trade_list")
 
 
 class employeeListView(generic.ListView):

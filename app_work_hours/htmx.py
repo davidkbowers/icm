@@ -9,9 +9,9 @@ from . import models
 from . import forms
 
 
-class HTMXemp_typeListView(generic.ListView):
-    model = models.emp_type
-    form_class = forms.emp_typeForm
+class HTMXemp_tradeListView(generic.ListView):
+    model = models.emp_trade
+    form_class = forms.emp_tradeForm
     
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
@@ -22,9 +22,9 @@ class HTMXemp_typeListView(generic.ListView):
         return TemplateResponse(request,'htmx/list.html', context)
 
 
-class HTMXemp_typeCreateView(generic.CreateView):
-    model = models.emp_type
-    form_class = forms.emp_typeForm
+class HTMXemp_tradeCreateView(generic.CreateView):
+    model = models.emp_trade
+    form_class = forms.emp_tradeForm
     
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
@@ -52,9 +52,9 @@ class HTMXemp_typeCreateView(generic.CreateView):
         return TemplateResponse(self.request, 'htmx/form.html', context)
 
 
-class HTMXemp_typeDeleteView(generic.DeleteView):
-    model = models.emp_type
-    success_url = reverse_lazy("app_employee_emp_type_htmx_list")
+class HTMXemp_tradeDeleteView(generic.DeleteView):
+    model = models.emp_trade
+    success_url = reverse_lazy("app_employee_emp_trade_htmx_list")
     
     def form_valid(self, form):
         super().form_valid(form)

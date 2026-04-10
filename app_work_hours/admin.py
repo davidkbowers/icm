@@ -14,31 +14,27 @@ class work_timeAdminForm(forms.ModelForm):
 class work_timeAdmin(admin.ModelAdmin):
     form = work_timeAdminForm
     list_display = [
+        "id",
+        "employee_id",
         "work_type",
         "hours_worked",
+        "rate_modifier",
+        "job_number_phase_cat_desc",
+        "work_date",
         "created",
-        "day_of_week",
-        "id",
-        "job_number",
-        "job_description",
         "last_updated",
-        "job_phase",
-        "job_category",
     ]
     readonly_fields = [
+        "id",
+        "employee_id",
         "work_type",
         "hours_worked",
+        "rate_modifier",
+        "job_number_phase_cat_desc",
+        "work_date",
         "created",
-        "day_of_week",
-        "id",
-        "job_number",
-        "job_description",
         "last_updated",
-        "job_phase",
-        "job_category",
     ]
 
 
-admin.site.register(models.emp_type, emp_typeAdmin)
-admin.site.register(models.employee, employeeAdmin)
 admin.site.register(models.work_time, work_timeAdmin)

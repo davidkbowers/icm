@@ -2,9 +2,9 @@ from django import forms
 from . import models
 
 
-class emp_typeForm(forms.ModelForm):
+class emp_tradeForm(forms.ModelForm):
     class Meta:
-        model = models.emp_type
+        model = models.emp_trade
         fields = [
             "name",
         ]
@@ -14,7 +14,7 @@ class employeeForm(forms.ModelForm):
     class Meta:
         model = models.employee
         fields = [
-            "type",
+            "trade",
             "has_truck",
             "name",
         ]

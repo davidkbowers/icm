@@ -4,32 +4,14 @@
 {% block content %}
     
 <p>
-    <a class="btn btn-light" href="{% url 'app_employee_employee_list' %}">
-    employee Listing
+    <a class="btn btn-light" href="{% url 'app_employee_emp_trade_list' %}">
+    emp_trade Listing
     </a>
 </p>
     
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{form.errors}}
-    <div class="form-group row">
-            <label class="col-sm-2 col-form-label" for="trade">trade: </label>
-      <input class="form-control col-sm-10"
-                 id="trade" type="text"
-                 name="trade" value="{{ object.trade }}">
-  </div>
-  <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="id">id: </label>
-      <input class="form-control col-sm-10"
-         id="id" type="text"
-         name="id" value="{{ object.id }}" disabled>
-  </div>
-  <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="has_truck">has_truck: </label>
-      <input class="form-control col-sm-10"
-         id="has_truck" type="checkbox"
-         name="has_truck" value="{{ object.has_truck }}">
-  </div>
   <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="last_updated">last_updated: </label>
       <input class="form-control col-sm-10"
@@ -41,6 +23,12 @@
       <input class="form-control col-sm-10"
          id="created" type="datetime-local"
          name="created" value="{{ object.created }}" disabled>
+  </div>
+  <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="id">id: </label>
+      <input class="form-control col-sm-10"
+         id="id" type="text"
+         name="id" value="{{ object.id }}" disabled>
   </div>
   <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="name">name: </label>
