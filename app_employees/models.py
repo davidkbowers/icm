@@ -31,7 +31,7 @@ class employee(models.Model):
     # Fields
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.TextField(max_length=100)
-    trade = models.UUIDField()
+    trade = models.ForeignKey("emp_trade", on_delete=models.SET_NULL, null=True, blank=True)
     has_truck = models.BooleanField()
     created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
