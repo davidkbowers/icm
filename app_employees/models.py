@@ -7,6 +7,7 @@ class emp_trade(models.Model):
 
     # Fields
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    acronym = models.CharField(max_length=15)
     name = models.TextField(max_length=100)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
