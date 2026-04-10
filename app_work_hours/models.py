@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 import uuid
+from datetime import timedelta
+from django.core.exceptions import ValidationError
 
 
 class work_time(models.Model):
@@ -27,4 +29,35 @@ class work_time(models.Model):
 
     def get_update_url(self):
         return reverse("app_employee_work_time_update", args=(self.pk,))
+
+
+class time_card(models.Model):
+
+    # Fields
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    employees = models.ManyToManyField("app_employees.employee", related_name="time_cards")
+    job_number_phase_cat_desc = models.ForeignKey("app_other.job_phase_cat_desc", on_delete=models.PROTECT)
+    rate_modifier = models.ForeignKey("app_other.RateModifier", on_delete=models.PROTECT)
+    week_start_date = models.DateField()
+    week_end_date = models.DateField()
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        pass
+
+    def clean(self):
+        if self.week_start_date and self.week_start_date.weekday() != 0:
+            raise ValidationError({"week_start_date": "Week start date must be a Monday."})
+
+        if self.week_end_date and self.week_end_date.weekday() != 6:
+            raise ValidationError({"week_end_date": "Week end date must be a Sunday."})
+
+        if self.week_start_date and self.week_end_date:
+            expected_end = self.week_start_date + timedelta(days=6)
+            if self.week_end_date != expected_end:
+                raise ValidationError({"week_end_date": "Week end date must be 6 days after week start date."})
+
+    def __str__(self):
+        return f"Time Card {self.week_start_date} - {self.week_end_date}"
 
