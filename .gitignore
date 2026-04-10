@@ -3,3 +3,4 @@
 **/Migrations/
 *.sqlite3
 *.sqlite
+~*
