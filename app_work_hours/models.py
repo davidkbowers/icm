@@ -44,7 +44,17 @@ class time_card(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
-        pass
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "week_start_date",
+                    "week_end_date",
+                    "job_number_phase_cat_desc",
+                    "rate_modifier",
+                ],
+                name="uq_time_card_week_job_rate",
+            )
+        ]
 
     def clean(self):
         if self.week_start_date and self.week_start_date.weekday() != 0:
