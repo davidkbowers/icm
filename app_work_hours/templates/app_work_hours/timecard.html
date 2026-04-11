@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICM Weekly Timecard</title>
+    <style>
+        :root {
+            --bg: #f6f7fb;
+            --surface: #ffffff;
+            --ink: #13223a;
+            --muted: #5f6f86;
+            --line: #d7deea;
+            --accent: #0f766e;
+            --accent-2: #115e59;
+            --good: #14532d;
+            --good-bg: #dcfce7;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 0% 0%, #e9f5f3, transparent 35%),
+                radial-gradient(circle at 100% 100%, #e9eefc, transparent 35%),
+                var(--bg);
+            min-height: 100vh;
+            padding: 1.25rem;
+        }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px rgba(17, 24, 39, 0.06);
+        }
+
+        .header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: 0.02em;
+        }
+
+        .header p {
+            margin: 0.3rem 0 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .form {
+            padding: 1rem 1.25rem 1.25rem;
+            border-top: 1px solid var(--line);
+            display: grid;
+            gap: 1rem;
+        }
+
+        .filters {
+            display: grid;
+            gap: 0.85rem;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+        }
+
+        .field {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        select,
+        input[type="date"],
+        input[type="number"] {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 0.6rem 0.7rem;
+            font-size: 1rem;
+            width: 100%;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--line);
+            padding: 0.65rem;
+            text-align: center;
+        }
+
+        th {
+            background: #f9fafb;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        th.job-col,
+        td.job-col {
+            text-align: left;
+            min-width: 240px;
+        }
+
+        th.job-col {
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        tfoot td {
+            font-weight: 700;
+            background: #f6faf9;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .table-actions {
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: 0;
+            border-radius: 10px;
+            padding: 0.66rem 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--accent-2);
+        }
+
+        .btn-secondary {
+            background: #e6f4f1;
+            color: #0f766e;
+            border: 1px solid #b6e2db;
+        }
+
+        .btn-secondary:hover {
+            background: #d8eee9;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 1rem;
+            border-top: 1px solid var(--line);
+            background: #fcfffe;
+        }
+
+        .pill {
+            background: var(--good-bg);
+            color: var(--good);
+            border: 1px solid #86efac;
+            border-radius: 999px;
+            padding: 0.35rem 0.75rem;
+            font-weight: 700;
+        }
+
+        .errors {
+            margin: 0;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 740px) {
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            th,
+            td {
+                padding: 0.45rem 0.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <section class="card">
+            <div class="header">
+                <div>
+                    <h1>Weekly Timecard</h1>
+                    <p>Select an employee, enter hours for the week, and save.</p>
+                </div>
+                <a href="{% url 'home' %}">Sign out</a>
+            </div>
+
+            <form method="post" class="form">
+                {% csrf_token %}
+                {{ row_formset.management_form }}
+
+                {% if form.non_field_errors %}
+                    <div class="errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {% if row_formset.non_form_errors %}
+                    <div class="errors">{{ row_formset.non_form_errors }}</div>
+                {% endif %}
+
+                <div class="filters">
+                    <div class="field">
+                        <label for="{{ form.employee.id_for_label }}">Employee</label>
+                        {{ form.employee }}
+                        {% if form.employee.errors %}<small class="errors">{{ form.employee.errors|striptags }}</small>{% endif %}
+                    </div>
+                    <div class="field">
+                        <label for="{{ form.week_start_date.id_for_label }}">Week start (Monday)</label>
+                        {{ form.week_start_date }}
+                        {% if form.week_start_date.errors %}<small class="errors">{{ form.week_start_date.errors|striptags }}</small>{% endif %}
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="job-col">Job Number, Phase, Category &amp; Description:</th>
+                            {% for label in day_labels %}
+                                <th>{{ label }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody id="rows-body">
+                        {% for row_form in row_formset %}
+                            <tr>
+                                <td class="job-col">
+                                    {{ row_form.job_number_phase_cat_desc }}
+                                    {% if row_form.job_number_phase_cat_desc.errors %}
+                                        <small class="errors">{{ row_form.job_number_phase_cat_desc.errors|striptags }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row_form.mon }}</td>
+                                <td>{{ row_form.tue }}</td>
+                                <td>{{ row_form.wed }}</td>
+                                <td>{{ row_form.thu }}</td>
+                                <td>{{ row_form.fri }}</td>
+                                <td>{{ row_form.sat }}</td>
+                                <td>{{ row_form.sun }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="job-col">Daily Totals</td>
+                            <td>{{ daily_totals.mon|default:0 }}h</td>
+                            <td>{{ daily_totals.tue|default:0 }}h</td>
+                            <td>{{ daily_totals.wed|default:0 }}h</td>
+                            <td>{{ daily_totals.thu|default:0 }}h</td>
+                            <td>{{ daily_totals.fri|default:0 }}h</td>
+                            <td>{{ daily_totals.sat|default:0 }}h</td>
+                            <td>{{ daily_totals.sun|default:0 }}h</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <template id="empty-row-template">
+                    <tr>
+                        <td class="job-col">{{ row_formset.empty_form.job_number_phase_cat_desc }}</td>
+                        <td>{{ row_formset.empty_form.mon }}</td>
+                        <td>{{ row_formset.empty_form.tue }}</td>
+                        <td>{{ row_formset.empty_form.wed }}</td>
+                        <td>{{ row_formset.empty_form.thu }}</td>
+                        <td>{{ row_formset.empty_form.fri }}</td>
+                        <td>{{ row_formset.empty_form.sat }}</td>
+                        <td>{{ row_formset.empty_form.sun }}</td>
+                    </tr>
+                </template>
+
+                <div class="actions table-actions">
+                    <button type="button" class="btn-secondary" id="add-row-btn">Add Row</button>
+                    <button type="submit">Save Weekly Timecard</button>
+                </div>
+            </form>
+
+            <div class="summary">
+                <span>Weekly total</span>
+                <span class="pill">{{ week_total|default:0 }}h</span>
+            </div>
+        </section>
+    </main>
+    <script>
+        (function () {
+            const addRowBtn = document.getElementById("add-row-btn");
+            const rowsBody = document.getElementById("rows-body");
+            const totalFormsInput = document.getElementById("id_rows-TOTAL_FORMS");
+            const emptyRowTemplate = document.getElementById("empty-row-template");
+
+            if (!addRowBtn || !rowsBody || !totalFormsInput || !emptyRowTemplate) {
+                return;
+            }
+
+            addRowBtn.addEventListener("click", function () {
+                const nextIndex = Number(totalFormsInput.value);
+                const rowHtml = emptyRowTemplate.innerHTML.replace(/__prefix__/g, String(nextIndex));
+                rowsBody.insertAdjacentHTML("beforeend", rowHtml);
+                totalFormsInput.value = String(nextIndex + 1);
+            });
+        })();
+    </script>
+</body>
+</html>
