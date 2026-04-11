@@ -163,6 +163,12 @@
             outline: none;
         }
 
+        .field input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 1;
+            cursor: pointer;
+        }
+
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -346,8 +352,12 @@
             opacity: 0.7;
         }
 
+        .entry-pill.empty .hours-btn {
+            justify-content: center;
+        }
+
         .entry-pill.empty .entry-type {
-            opacity: 0;
+            display: none;
         }
 
         .row-total,
