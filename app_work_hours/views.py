@@ -5,6 +5,7 @@ from django.forms import formset_factory
 from django.shortcuts import redirect, render
 from django.views import generic
 from django.urls import reverse_lazy
+from django.utils import timezone
 from app_employees.models import employee
 from app_other.models import job_phase_cat_desc
 from . import models
@@ -13,6 +14,27 @@ from . import forms
 
 def _date_to_work_date_int(value):
     return int(value.strftime("%Y%m%d"))
+
+
+def _display_week_start(weekly_form):
+    raw_value = weekly_form["week_start_date"].value()
+    try:
+        week_start = date.fromisoformat(str(raw_value))
+    except (TypeError, ValueError):
+        week_start = timezone.localdate()
+    return week_start - timedelta(days=week_start.weekday())
+
+
+def _display_employee_name(weekly_form):
+    employee_value = weekly_form["employee"].value()
+    if not employee_value:
+        return "-"
+    selected = employee.objects.filter(pk=employee_value).first()
+    return selected.name if selected else "-"
+
+
+def _short_date(value):
+    return f"{value.month}/{value.day}"
 
 
 @login_required
@@ -111,6 +133,13 @@ def timecard(request):
                 week_total = sum(daily_totals.values())
                 form = forms.WeeklyTimecardForm(initial=initial_data)
 
+    display_week_start = _display_week_start(form)
+    day_labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    day_headers = [
+        {"label": label, "date": _short_date(display_week_start + timedelta(days=index))}
+        for index, label in enumerate(day_labels)
+    ]
+
     return render(
         request,
         "app_work_hours/timecard.html",
@@ -119,7 +148,9 @@ def timecard(request):
             "row_formset": row_formset,
             "daily_totals": daily_totals,
             "week_total": week_total,
-            "day_labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            "day_headers": day_headers,
+            "employee_name": _display_employee_name(form),
+            "period_ending": f"{(display_week_start + timedelta(days=6)).month}/{(display_week_start + timedelta(days=6)).day}/{(display_week_start + timedelta(days=6)).year}",
         },
     )
 
