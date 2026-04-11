@@ -309,25 +309,25 @@
             width: 100%;
             min-height: 74px;
             transition: var(--transition);
+            cursor: pointer;
         }
 
-        .entry-pill input[type="number"] {
+        .hours-btn {
             width: 100%;
-            background: transparent;
             border: none;
+            background: transparent;
             color: var(--text-main);
-            text-align: center;
+            cursor: pointer;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .hours-btn-hours {
             font-size: 2.1rem;
             font-weight: 600;
-            outline: none;
-            -moz-appearance: textfield;
-            appearance: textfield;
-        }
-
-        .entry-pill input[type="number"]::-webkit-outer-spin-button,
-        .entry-pill input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+            line-height: 1;
         }
 
         .entry-type {
@@ -339,6 +339,15 @@
             margin-top: 0.3rem;
             background: rgba(16, 185, 129, 0.2);
             color: var(--type-st);
+        }
+
+        .entry-pill.empty .hours-btn-hours {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .entry-pill.empty .entry-type {
+            opacity: 0;
         }
 
         .row-total,
@@ -405,6 +414,159 @@
 
         .signout:hover {
             color: var(--text-main);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(2, 8, 23, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            width: min(92vw, 480px);
+            background: rgba(23, 36, 59, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.7rem 1.9rem;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+            transform: translateY(16px) scale(0.97);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .modal-head h3 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.35rem;
+        }
+
+        .modal-sub {
+            color: var(--text-muted);
+            font-size: 1.9rem;
+        }
+
+        .close-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .hour-display {
+            text-align: center;
+            margin-bottom: 0.9rem;
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .hour-display span {
+            color: var(--text-muted);
+            font-size: 3rem;
+            margin-left: 0.2rem;
+        }
+
+        .modal-slider {
+            width: 100%;
+            margin-bottom: 1.1rem;
+        }
+
+        .quick-hours {
+            display: flex;
+            justify-content: center;
+            gap: 0.7rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .quick-hours button {
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+            min-width: 50px;
+            padding: 0.45rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.92rem;
+        }
+
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.7rem;
+            margin-bottom: 1rem;
+        }
+
+        .type-btn {
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            padding: 0.72rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .type-btn.active {
+            border-color: #10b981;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.16);
+        }
+
+        .modifier-wrap {
+            margin-bottom: 1.2rem;
+        }
+
+        .modifier-wrap label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .modifier-wrap select {
+            width: 100%;
+            background: rgba(10, 16, 29, 0.65);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.72rem 0.82rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.7rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
         }
 
         @media (max-width: 1300px) {
@@ -536,13 +698,13 @@
                                         <small class="small-error">{{ row_form.job_number_phase_cat_desc.errors|striptags }}</small>
                                     {% endif %}
                                 </td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.mon }}<span class="entry-type">ST</span></div></td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.tue }}<span class="entry-type">ST</span></div></td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.wed }}<span class="entry-type">ST</span></div></td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.thu }}<span class="entry-type">ST</span></div></td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.fri }}<span class="entry-type">ST</span></div></td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.sat }}<span class="entry-type">ST</span></div></td>
-                                <td class="day-cell"><div class="entry-pill">{{ row_form.sun }}<span class="entry-type">ST</span></div></td>
+                                <td class="day-cell" data-day="mon"><div class="entry-pill">{{ row_form.mon.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="tue"><div class="entry-pill">{{ row_form.tue.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="wed"><div class="entry-pill">{{ row_form.wed.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="thu"><div class="entry-pill">{{ row_form.thu.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="fri"><div class="entry-pill">{{ row_form.fri.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="sat"><div class="entry-pill">{{ row_form.sat.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="sun"><div class="entry-pill">{{ row_form.sun.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
                                 <td class="row-total"><strong class="row-total-value">0h</strong></td>
                             </tr>
                         {% endfor %}
@@ -569,13 +731,13 @@
                         {{ row_formset.empty_form.job_number_phase_cat_desc }}
                         {{ row_formset.empty_form.DELETE }}
                     </td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.mon }}<span class="entry-type">ST</span></div></td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.tue }}<span class="entry-type">ST</span></div></td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.wed }}<span class="entry-type">ST</span></div></td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.thu }}<span class="entry-type">ST</span></div></td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.fri }}<span class="entry-type">ST</span></div></td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.sat }}<span class="entry-type">ST</span></div></td>
-                    <td class="day-cell"><div class="entry-pill">{{ row_formset.empty_form.sun }}<span class="entry-type">ST</span></div></td>
+                    <td class="day-cell" data-day="mon"><div class="entry-pill">{{ row_formset.empty_form.mon.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="tue"><div class="entry-pill">{{ row_formset.empty_form.tue.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="wed"><div class="entry-pill">{{ row_formset.empty_form.wed.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="thu"><div class="entry-pill">{{ row_formset.empty_form.thu.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="fri"><div class="entry-pill">{{ row_formset.empty_form.fri.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="sat"><div class="entry-pill">{{ row_formset.empty_form.sat.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="sun"><div class="entry-pill">{{ row_formset.empty_form.sun.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
                     <td class="row-total"><strong class="row-total-value">0h</strong></td>
                 </tr>
             </template>
@@ -586,17 +748,147 @@
         </form>
     </main>
 
+    <div class="modal-overlay" id="hours-modal">
+        <div class="modal-content">
+            <div class="modal-head">
+                <div>
+                    <h3>Log Time</h3>
+                    <div class="modal-sub" id="modal-subtitle">-</div>
+                </div>
+                <button type="button" class="close-btn" id="close-hours-modal">x</button>
+            </div>
+
+            <div class="hour-display"><span id="modal-hours-value">0</span><span>h</span></div>
+            <input class="modal-slider" type="range" min="0" max="24" step="1" value="0" id="modal-hours-slider">
+
+            <div class="quick-hours">
+                <button type="button" class="quick-add" data-add="1">+1</button>
+                <button type="button" class="quick-add" data-add="2">+2</button>
+                <button type="button" class="quick-add" data-add="4">+4</button>
+                <button type="button" class="quick-add" data-add="8">+8</button>
+            </div>
+
+            <div class="type-grid" id="type-grid">
+                <button type="button" class="type-btn active" data-type="ST">Straight Time (ST)</button>
+                <button type="button" class="type-btn" data-type="OT">Overtime (OT)</button>
+                <button type="button" class="type-btn" data-type="DT">Double Time (DT)</button>
+            </div>
+
+            <div class="modifier-wrap">
+                <label for="modifier-select">Modifier</label>
+                <select id="modifier-select">
+                    <option value="">None</option>
+                    <option value="PD$$">PD$$ - Per Diem</option>
+                    <option value="SD">SD - Night Shift</option>
+                    <option value="HZ/CS">HZ/CS - Hazardous/Confined Space</option>
+                    <option value="FMKF">FMKF - Above Scale</option>
+                    <option value="PF56">PF56 - Local #56</option>
+                    <option value="PF208">PF208 - Local #208</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="clear-hours-btn">Clear Day</button>
+                <button type="button" class="btn-primary" id="save-hours-btn">Save Entry</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         (function () {
             const addRowBtn = document.getElementById("add-row-btn");
             const rowsBody = document.getElementById("rows-body");
             const totalFormsInput = document.getElementById("id_rows-TOTAL_FORMS");
             const emptyRowTemplate = document.getElementById("empty-row-template");
+            const hoursModal = document.getElementById("hours-modal");
+            const closeHoursModalBtn = document.getElementById("close-hours-modal");
+            const clearHoursBtn = document.getElementById("clear-hours-btn");
+            const saveHoursBtn = document.getElementById("save-hours-btn");
+            const modalHoursSlider = document.getElementById("modal-hours-slider");
+            const modalHoursValue = document.getElementById("modal-hours-value");
+            const modalSubtitle = document.getElementById("modal-subtitle");
+            const quickAddButtons = document.querySelectorAll(".quick-add");
+            const typeButtons = document.querySelectorAll(".type-btn");
+            const modifierSelect = document.getElementById("modifier-select");
             const dayFields = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+            const dayLabels = {
+                mon: "Mon",
+                tue: "Tue",
+                wed: "Wed",
+                thu: "Thu",
+                fri: "Fri",
+                sat: "Sat",
+                sun: "Sun",
+            };
+            let activeDayInput = null;
+            let activeType = "ST";
 
             function toInt(value) {
                 const parsed = Number(value);
                 return Number.isFinite(parsed) ? parsed : 0;
+            }
+
+            function setActiveType(typeValue) {
+                activeType = typeValue || "ST";
+                typeButtons.forEach(function (button) {
+                    button.classList.toggle("active", button.dataset.type === activeType);
+                });
+            }
+
+            function syncCellVisual(input) {
+                if (!input) {
+                    return;
+                }
+                const cell = input.closest("td.day-cell");
+                if (!cell) {
+                    return;
+                }
+
+                const pill = cell.querySelector(".entry-pill");
+                const hoursLabel = cell.querySelector(".hours-btn-hours");
+                const typeLabel = cell.querySelector(".entry-type");
+                const hours = toInt(input.value);
+
+                if (hours > 0) {
+                    hoursLabel.textContent = hours + "h";
+                    if (pill) {
+                        pill.classList.remove("empty");
+                    }
+                } else {
+                    hoursLabel.textContent = "-";
+                    if (pill) {
+                        pill.classList.add("empty");
+                    }
+                }
+
+                if (typeLabel) {
+                    typeLabel.textContent = input.dataset.entryType || "ST";
+                }
+            }
+
+            function syncAllCellVisuals() {
+                rowsBody.querySelectorAll("td.day-cell input[type='hidden']").forEach(function (input) {
+                    syncCellVisual(input);
+                });
+            }
+
+            function openHoursModal(input) {
+                activeDayInput = input;
+                const currentHours = toInt(input.value);
+                modalHoursSlider.value = currentHours;
+                modalHoursValue.textContent = String(currentHours);
+                modifierSelect.value = input.dataset.modifier || "";
+                setActiveType(input.dataset.entryType || "ST");
+
+                const day = input.closest("td.day-cell") ? input.closest("td.day-cell").dataset.day : "";
+                modalSubtitle.textContent = "- " + (dayLabels[day] || "Day");
+
+                hoursModal.classList.add("active");
+            }
+
+            function closeHoursModal() {
+                hoursModal.classList.remove("active");
+                activeDayInput = null;
             }
 
             function updateTotals() {
@@ -614,7 +906,7 @@
                 rowsBody.querySelectorAll("tr").forEach(function (row) {
                     let rowTotal = 0;
                     dayFields.forEach(function (day) {
-                        const input = row.querySelector('input[name$="-' + day + '"]');
+                        const input = row.querySelector('input[type="hidden"][name$="-' + day + '"]');
                         const hours = input ? toInt(input.value) : 0;
                         rowTotal += hours;
                         dayTotals[day] += hours;
@@ -646,16 +938,78 @@
                     const rowHtml = emptyRowTemplate.innerHTML.replace(/__prefix__/g, String(nextIndex));
                     rowsBody.insertAdjacentHTML("beforeend", rowHtml);
                     totalFormsInput.value = String(nextIndex + 1);
+                    syncAllCellVisuals();
                     updateTotals();
                 });
             }
 
-            rowsBody.addEventListener("input", function (event) {
-                if (event.target && event.target.matches('input[type="number"]')) {
-                    updateTotals();
+            rowsBody.addEventListener("click", function (event) {
+                const trigger = event.target.closest(".hours-btn");
+                if (!trigger) {
+                    return;
+                }
+                const cell = trigger.closest("td.day-cell");
+                if (!cell) {
+                    return;
+                }
+                const targetInput = cell.querySelector("input[type='hidden']");
+                if (!targetInput) {
+                    return;
+                }
+                openHoursModal(targetInput);
+            });
+
+            modalHoursSlider.addEventListener("input", function () {
+                modalHoursValue.textContent = String(toInt(modalHoursSlider.value));
+            });
+
+            quickAddButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    const addBy = toInt(button.dataset.add);
+                    const updated = Math.min(24, toInt(modalHoursSlider.value) + addBy);
+                    modalHoursSlider.value = String(updated);
+                    modalHoursValue.textContent = String(updated);
+                });
+            });
+
+            typeButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    setActiveType(button.dataset.type || "ST");
+                });
+            });
+
+            saveHoursBtn.addEventListener("click", function () {
+                if (!activeDayInput) {
+                    return;
+                }
+                activeDayInput.value = String(toInt(modalHoursSlider.value));
+                activeDayInput.dataset.entryType = activeType;
+                activeDayInput.dataset.modifier = modifierSelect.value || "";
+                syncCellVisual(activeDayInput);
+                updateTotals();
+                closeHoursModal();
+            });
+
+            clearHoursBtn.addEventListener("click", function () {
+                if (!activeDayInput) {
+                    return;
+                }
+                activeDayInput.value = "0";
+                activeDayInput.dataset.entryType = "ST";
+                activeDayInput.dataset.modifier = "";
+                syncCellVisual(activeDayInput);
+                updateTotals();
+                closeHoursModal();
+            });
+
+            closeHoursModalBtn.addEventListener("click", closeHoursModal);
+            hoursModal.addEventListener("click", function (event) {
+                if (event.target === hoursModal) {
+                    closeHoursModal();
                 }
             });
 
+            syncAllCellVisuals();
             updateTotals();
         })();
     </script>
