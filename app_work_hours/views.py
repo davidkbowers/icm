@@ -49,9 +49,16 @@ def timecard(request):
     mileage_row_formset = MileageRowFormSet(request.POST or None, prefix="mileage_rows")
     day_fields = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
     daily_totals = {day: 0 for day in day_fields}
+    auto_allowance = {day: False for day in day_fields}
     week_total = 0
     mileage_total_miles = 0
     mileage_total_amount = 0
+
+    if request.method == "POST":
+        auto_allowance = {
+            day: request.POST.get(f"auto_allowance_{day}") == "on"
+            for day in day_fields
+        }
 
     if request.method == "POST" and form.is_valid() and row_formset.is_valid() and mileage_row_formset.is_valid():
         selected_employee = form.cleaned_data["employee"]
@@ -109,6 +116,12 @@ def timecard(request):
                 miles=mileage_data.get("miles") or 0,
                 amount=mileage_data.get("amount") or 0,
                 job_number_phase_cat_desc=mileage_data.get("job_number_phase_cat_desc"),
+            )
+
+        for index, day_name in enumerate(day_fields):
+            mileage_models.auto_allowance_day.objects.update_or_create(
+                allowance_date=week_dates[index],
+                defaults={"mileage_reimbursement_allowed": auto_allowance[day_name]},
             )
 
         return redirect(f"{request.path}?employee={selected_employee.id}&week_start_date={week_start}")
@@ -182,6 +195,16 @@ def timecard(request):
 
                 mileage_row_formset = MileageRowFormSet(initial=mileage_initial_rows or None, prefix="mileage_rows")
 
+                auto_allowance_rows = mileage_models.auto_allowance_day.objects.filter(
+                    allowance_date__range=(week_start, week_start + timedelta(days=6)),
+                )
+                allowance_by_date = {
+                    entry.allowance_date: entry.mileage_reimbursement_allowed
+                    for entry in auto_allowance_rows
+                }
+                for index, day_name in enumerate(day_fields):
+                    auto_allowance[day_name] = allowance_by_date.get(week_dates[index], False)
+
                 week_total = sum(daily_totals.values())
                 form = forms.WeeklyTimecardForm(initial=initial_data)
 
@@ -203,6 +226,7 @@ def timecard(request):
             "mileage_row_formset": mileage_row_formset,
             "mileage_total_miles": f"{mileage_total_miles:.2f}",
             "mileage_total_amount": f"{mileage_total_amount:.2f}",
+            "auto_allowance": auto_allowance,
             "day_headers": day_headers,
             "employee_name": _display_employee_name(form),
             "period_ending": f"{(display_week_start + timedelta(days=6)).month}/{(display_week_start + timedelta(days=6)).day}/{(display_week_start + timedelta(days=6)).year}",

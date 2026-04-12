@@ -419,7 +419,15 @@
             gap: 1rem;
         }
 
-        .mileage-card {
+        .bottom-panels {
+            display: grid;
+            grid-template-columns: minmax(620px, 1fr) minmax(360px, 0.85fr);
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .mileage-card,
+        .allowance-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
@@ -432,12 +440,28 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.8rem;
+            padding-bottom: 0.55rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .mileage-head h3 {
             margin: 0;
-            font-size: 1.6rem;
+            font-size: 2.2rem;
             font-weight: 600;
+        }
+
+        .panel-plus {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 2.6rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .panel-plus:hover {
+            color: var(--text-main);
         }
 
         .mileage-table {
@@ -450,12 +474,13 @@
             border-bottom: 1px solid var(--border);
             padding: 0.6rem 0.5rem;
             text-align: left;
-            font-size: 0.92rem;
+            font-size: 1.05rem;
         }
 
         .mileage-table th {
             color: var(--text-muted);
             font-weight: 600;
+            font-size: 1.2rem;
         }
 
         .mileage-table td input,
@@ -466,7 +491,7 @@
             border-radius: var(--radius-md);
             color: var(--text-main);
             padding: 0.5rem 0.6rem;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .mileage-totals {
@@ -476,6 +501,41 @@
             margin-top: 0.8rem;
             color: var(--text-muted);
             font-size: 0.92rem;
+        }
+
+        .allowance-head {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.55rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .allowance-head h3 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .allowance-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(42px, 1fr));
+            column-gap: 0.7rem;
+            row-gap: 0.35rem;
+            align-items: center;
+            justify-items: start;
+        }
+
+        .allowance-grid input[type="checkbox"] {
+            width: 28px;
+            height: 28px;
+            accent-color: var(--accent);
+        }
+
+        .allowance-grid label {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            text-transform: none;
+            letter-spacing: 0;
+            margin: 0;
         }
 
         .errors {
@@ -704,6 +764,10 @@
                 align-items: flex-start;
                 gap: 0.75rem;
             }
+
+            .bottom-panels {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -828,54 +892,79 @@
                 </tr>
             </template>
 
-            <section class="mileage-card">
-                <div class="mileage-head">
-                    <h3>Mileage Reimbursement</h3>
-                    <button type="button" class="btn-primary" id="add-mileage-row-btn">+ Add Mileage</button>
-                </div>
+            <div class="bottom-panels">
+                <section class="mileage-card">
+                    <div class="mileage-head">
+                        <h3>Mileage Reimbursement</h3>
+                        <button type="button" class="panel-plus" id="add-mileage-row-btn">+</button>
+                    </div>
 
-                <table class="mileage-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Purpose</th>
-                            <th>Miles</th>
-                            <th>Amount ($)</th>
-                            <th>Job</th>
-                        </tr>
-                    </thead>
-                    <tbody id="mileage-rows-body">
-                        {% for mileage_row in mileage_row_formset %}
+                    <table class="mileage-table">
+                        <thead>
                             <tr>
-                                <td>{{ mileage_row.mileage_date }}{% if mileage_row.mileage_date.errors %}<small class="small-error">{{ mileage_row.mileage_date.errors|striptags }}</small>{% endif %}</td>
-                                <td>{{ mileage_row.purpose }}{% if mileage_row.purpose.errors %}<small class="small-error">{{ mileage_row.purpose.errors|striptags }}</small>{% endif %}</td>
-                                <td>{{ mileage_row.miles }}{% if mileage_row.miles.errors %}<small class="small-error">{{ mileage_row.miles.errors|striptags }}</small>{% endif %}</td>
-                                <td>{{ mileage_row.amount }}{% if mileage_row.amount.errors %}<small class="small-error">{{ mileage_row.amount.errors|striptags }}</small>{% endif %}</td>
-                                <td>
-                                    {{ mileage_row.job_number_phase_cat_desc }}
-                                    {{ mileage_row.DELETE }}
-                                    {% if mileage_row.job_number_phase_cat_desc.errors %}<small class="small-error">{{ mileage_row.job_number_phase_cat_desc.errors|striptags }}</small>{% endif %}
-                                </td>
+                                <th>Date</th>
+                                <th>Purpose</th>
+                                <th>Miles</th>
+                                <th>Amount ($)</th>
+                                <th>Job</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="mileage-rows-body">
+                            {% for mileage_row in mileage_row_formset %}
+                                <tr>
+                                    <td>{{ mileage_row.mileage_date }}{% if mileage_row.mileage_date.errors %}<small class="small-error">{{ mileage_row.mileage_date.errors|striptags }}</small>{% endif %}</td>
+                                    <td>{{ mileage_row.purpose }}{% if mileage_row.purpose.errors %}<small class="small-error">{{ mileage_row.purpose.errors|striptags }}</small>{% endif %}</td>
+                                    <td>{{ mileage_row.miles }}{% if mileage_row.miles.errors %}<small class="small-error">{{ mileage_row.miles.errors|striptags }}</small>{% endif %}</td>
+                                    <td>{{ mileage_row.amount }}{% if mileage_row.amount.errors %}<small class="small-error">{{ mileage_row.amount.errors|striptags }}</small>{% endif %}</td>
+                                    <td>
+                                        {{ mileage_row.job_number_phase_cat_desc }}
+                                        {{ mileage_row.DELETE }}
+                                        {% if mileage_row.job_number_phase_cat_desc.errors %}<small class="small-error">{{ mileage_row.job_number_phase_cat_desc.errors|striptags }}</small>{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-                <template id="empty-mileage-row-template">
-                    <tr>
-                        <td>{{ mileage_row_formset.empty_form.mileage_date }}</td>
-                        <td>{{ mileage_row_formset.empty_form.purpose }}</td>
-                        <td>{{ mileage_row_formset.empty_form.miles }}</td>
-                        <td>{{ mileage_row_formset.empty_form.amount }}</td>
-                        <td>{{ mileage_row_formset.empty_form.job_number_phase_cat_desc }}{{ mileage_row_formset.empty_form.DELETE }}</td>
-                    </tr>
-                </template>
+                    <template id="empty-mileage-row-template">
+                        <tr>
+                            <td>{{ mileage_row_formset.empty_form.mileage_date }}</td>
+                            <td>{{ mileage_row_formset.empty_form.purpose }}</td>
+                            <td>{{ mileage_row_formset.empty_form.miles }}</td>
+                            <td>{{ mileage_row_formset.empty_form.amount }}</td>
+                            <td>{{ mileage_row_formset.empty_form.job_number_phase_cat_desc }}{{ mileage_row_formset.empty_form.DELETE }}</td>
+                        </tr>
+                    </template>
 
-                <div class="mileage-totals">
-                    <span>Total Miles: <strong>{{ mileage_total_miles }}</strong></span>
-                    <span>Total Amount: <strong>${{ mileage_total_amount }}</strong></span>
-                </div>
-            </section>
+                    <div class="mileage-totals">
+                        <span>Total Miles: <strong>{{ mileage_total_miles }}</strong></span>
+                        <span>Total Amount: <strong>${{ mileage_total_amount }}</strong></span>
+                    </div>
+                </section>
+
+                <section class="allowance-card">
+                    <div class="allowance-head">
+                        <h3>Auto Allowance</h3>
+                    </div>
+                    <div class="allowance-grid">
+                        <input type="checkbox" id="auto-allowance-mon" name="auto_allowance_mon" {% if auto_allowance.mon %}checked{% endif %}>
+                        <input type="checkbox" id="auto-allowance-tue" name="auto_allowance_tue" {% if auto_allowance.tue %}checked{% endif %}>
+                        <input type="checkbox" id="auto-allowance-wed" name="auto_allowance_wed" {% if auto_allowance.wed %}checked{% endif %}>
+                        <input type="checkbox" id="auto-allowance-thu" name="auto_allowance_thu" {% if auto_allowance.thu %}checked{% endif %}>
+                        <input type="checkbox" id="auto-allowance-fri" name="auto_allowance_fri" {% if auto_allowance.fri %}checked{% endif %}>
+                        <input type="checkbox" id="auto-allowance-sat" name="auto_allowance_sat" {% if auto_allowance.sat %}checked{% endif %}>
+                        <input type="checkbox" id="auto-allowance-sun" name="auto_allowance_sun" {% if auto_allowance.sun %}checked{% endif %}>
+
+                        <label for="auto-allowance-mon">Mon</label>
+                        <label for="auto-allowance-tue">Tue</label>
+                        <label for="auto-allowance-wed">Wed</label>
+                        <label for="auto-allowance-thu">Thu</label>
+                        <label for="auto-allowance-fri">Fri</label>
+                        <label for="auto-allowance-sat">Sat</label>
+                        <label for="auto-allowance-sun">Sun</label>
+                    </div>
+                </section>
+            </div>
 
         </form>
     </main>
