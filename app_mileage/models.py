@@ -37,3 +37,17 @@ class mileage_reimbursement(models.Model):
 
     def __str__(self):
         return f"{self.employee} {self.mileage_date} {self.miles} mi"
+
+
+class auto_allowance_day(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    allowance_date = models.DateField(unique=True)
+    mileage_reimbursement_allowed = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        ordering = ["allowance_date"]
+
+    def __str__(self):
+        return f"{self.allowance_date} allowed={self.mileage_reimbursement_allowed}"
