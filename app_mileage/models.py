@@ -35,6 +35,13 @@ class mileage_reimbursement(models.Model):
             if not (self.week_start_date <= self.mileage_date <= week_end):
                 raise ValidationError({"mileage_date": "Mileage date must be within the selected week."})
 
+            is_allowed = auto_allowance_day.objects.filter(
+                allowance_date=self.mileage_date,
+                mileage_reimbursement_allowed=True,
+            ).exists()
+            if not is_allowed:
+                raise ValidationError({"mileage_date": "Mileage reimbursement is not allowed for this date."})
+
     def __str__(self):
         return f"{self.employee} {self.mileage_date} {self.miles} mi"
 

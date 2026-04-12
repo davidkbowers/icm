@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from app_employees.models import employee
 from app_other.models import job_phase_cat_desc
+from .models import auto_allowance_day
 
 
 class WeeklyMileageForm(forms.Form):
@@ -49,6 +50,20 @@ class MileageRowForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["job_number_phase_cat_desc"].queryset = self.fields["job_number_phase_cat_desc"].queryset.order_by("item")
         self.fields["job_number_phase_cat_desc"].label_from_instance = lambda obj: obj.item
+
+    def clean_mileage_date(self):
+        mileage_date = self.cleaned_data.get("mileage_date")
+        if not mileage_date:
+            return mileage_date
+
+        is_allowed = auto_allowance_day.objects.filter(
+            allowance_date=mileage_date,
+            mileage_reimbursement_allowed=True,
+        ).exists()
+        if not is_allowed:
+            raise forms.ValidationError("Mileage reimbursement is not allowed for this date.")
+
+        return mileage_date
 
     def clean(self):
         cleaned_data = super().clean()
