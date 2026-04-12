@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mileage Reimbursement</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --border: rgba(255, 255, 255, 0.1);
+            --radius-md: 8px;
+            --radius-lg: 16px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: "Inter", sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.2rem;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 0.8rem;
+            max-width: 680px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.35rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            padding: 0.6rem 0.7rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 0.65rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .btn {
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.6rem 1rem;
+            background: var(--accent);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .totals {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: flex-end;
+            margin-top: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .errorlist {
+            margin: 0.25rem 0 0;
+            padding-left: 1rem;
+            color: #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section class="panel">
+            <h1>Mileage Reimbursement</h1>
+            <p style="color: var(--text-muted);">Period ending: {{ period_ending }}</p>
+        </section>
+
+        <form method="post" class="panel">
+            {% csrf_token %}
+            {{ row_formset.management_form }}
+            <div class="controls">
+                <div>
+                    <label for="{{ form.employee.id_for_label }}">Employee</label>
+                    {{ form.employee }}
+                    {{ form.employee.errors }}
+                </div>
+                <div>
+                    <label for="{{ form.week_start_date.id_for_label }}">Week Start (Monday)</label>
+                    {{ form.week_start_date }}
+                    {{ form.week_start_date.errors }}
+                </div>
+            </div>
+
+            <div class="actions" style="margin-top: 1rem;">
+                <h2 style="margin: 0;">Entries</h2>
+                <button class="btn" type="submit">Save Mileage</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Purpose</th>
+                        <th>Miles</th>
+                        <th>Amount ($)</th>
+                        <th>Job</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in row_formset %}
+                        <tr>
+                            <td>{{ row.mileage_date }}{{ row.mileage_date.errors }}</td>
+                            <td>{{ row.purpose }}{{ row.purpose.errors }}</td>
+                            <td>{{ row.miles }}{{ row.miles.errors }}</td>
+                            <td>{{ row.amount }}{{ row.amount.errors }}</td>
+                            <td>{{ row.job_number_phase_cat_desc }}{{ row.job_number_phase_cat_desc.errors }}</td>
+                            <td>{{ row.DELETE }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="totals">
+                <span>Total Miles: <strong>{{ total_miles }}</strong></span>
+                <span>Total Amount: <strong>${{ total_amount }}</strong></span>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

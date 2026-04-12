@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'app_employees',
     'app_work_hours',
     'app_other',
+    'app_mileage',
 ]
 
 MIDDLEWARE = [

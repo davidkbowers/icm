@@ -419,6 +419,65 @@
             gap: 1rem;
         }
 
+        .mileage-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .mileage-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .mileage-head h3 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .mileage-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mileage-table th,
+        .mileage-table td {
+            border-bottom: 1px solid var(--border);
+            padding: 0.6rem 0.5rem;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        .mileage-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .mileage-table td input,
+        .mileage-table td select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            padding: 0.5rem 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .mileage-totals {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.25rem;
+            margin-top: 0.8rem;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
         .errors {
             margin: 0;
             padding: 0.75rem 1rem;
@@ -653,6 +712,7 @@
         <form method="post" class="main-content">
             {% csrf_token %}
             {{ row_formset.management_form }}
+            {{ mileage_row_formset.management_form }}
 
         <header class="app-header">
             <div class="brand">
@@ -687,6 +747,9 @@
             {% endif %}
             {% if row_formset.non_form_errors %}
                 <div class="errors">{{ row_formset.non_form_errors }}</div>
+            {% endif %}
+            {% if mileage_row_formset.non_form_errors %}
+                <div class="errors">{{ mileage_row_formset.non_form_errors }}</div>
             {% endif %}
 
             <div class="top-bar">
@@ -765,6 +828,55 @@
                 </tr>
             </template>
 
+            <section class="mileage-card">
+                <div class="mileage-head">
+                    <h3>Mileage Reimbursement</h3>
+                    <button type="button" class="btn-primary" id="add-mileage-row-btn">+ Add Mileage</button>
+                </div>
+
+                <table class="mileage-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Purpose</th>
+                            <th>Miles</th>
+                            <th>Amount ($)</th>
+                            <th>Job</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mileage-rows-body">
+                        {% for mileage_row in mileage_row_formset %}
+                            <tr>
+                                <td>{{ mileage_row.mileage_date }}{% if mileage_row.mileage_date.errors %}<small class="small-error">{{ mileage_row.mileage_date.errors|striptags }}</small>{% endif %}</td>
+                                <td>{{ mileage_row.purpose }}{% if mileage_row.purpose.errors %}<small class="small-error">{{ mileage_row.purpose.errors|striptags }}</small>{% endif %}</td>
+                                <td>{{ mileage_row.miles }}{% if mileage_row.miles.errors %}<small class="small-error">{{ mileage_row.miles.errors|striptags }}</small>{% endif %}</td>
+                                <td>{{ mileage_row.amount }}{% if mileage_row.amount.errors %}<small class="small-error">{{ mileage_row.amount.errors|striptags }}</small>{% endif %}</td>
+                                <td>
+                                    {{ mileage_row.job_number_phase_cat_desc }}
+                                    {{ mileage_row.DELETE }}
+                                    {% if mileage_row.job_number_phase_cat_desc.errors %}<small class="small-error">{{ mileage_row.job_number_phase_cat_desc.errors|striptags }}</small>{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <template id="empty-mileage-row-template">
+                    <tr>
+                        <td>{{ mileage_row_formset.empty_form.mileage_date }}</td>
+                        <td>{{ mileage_row_formset.empty_form.purpose }}</td>
+                        <td>{{ mileage_row_formset.empty_form.miles }}</td>
+                        <td>{{ mileage_row_formset.empty_form.amount }}</td>
+                        <td>{{ mileage_row_formset.empty_form.job_number_phase_cat_desc }}{{ mileage_row_formset.empty_form.DELETE }}</td>
+                    </tr>
+                </template>
+
+                <div class="mileage-totals">
+                    <span>Total Miles: <strong>{{ mileage_total_miles }}</strong></span>
+                    <span>Total Amount: <strong>${{ mileage_total_amount }}</strong></span>
+                </div>
+            </section>
+
         </form>
     </main>
 
@@ -820,6 +932,10 @@
             const rowsBody = document.getElementById("rows-body");
             const totalFormsInput = document.getElementById("id_rows-TOTAL_FORMS");
             const emptyRowTemplate = document.getElementById("empty-row-template");
+            const addMileageRowBtn = document.getElementById("add-mileage-row-btn");
+            const mileageRowsBody = document.getElementById("mileage-rows-body");
+            const mileageTotalFormsInput = document.getElementById("id_mileage_rows-TOTAL_FORMS");
+            const emptyMileageRowTemplate = document.getElementById("empty-mileage-row-template");
             const hoursModal = document.getElementById("hours-modal");
             const closeHoursModalBtn = document.getElementById("close-hours-modal");
             const clearHoursBtn = document.getElementById("clear-hours-btn");
@@ -960,6 +1076,15 @@
                     totalFormsInput.value = String(nextIndex + 1);
                     syncAllCellVisuals();
                     updateTotals();
+                });
+            }
+
+            if (addMileageRowBtn && mileageRowsBody && mileageTotalFormsInput && emptyMileageRowTemplate) {
+                addMileageRowBtn.addEventListener("click", function () {
+                    const nextIndex = Number(mileageTotalFormsInput.value);
+                    const rowHtml = emptyMileageRowTemplate.innerHTML.replace(/__prefix__/g, String(nextIndex));
+                    mileageRowsBody.insertAdjacentHTML("beforeend", rowHtml);
+                    mileageTotalFormsInput.value = String(nextIndex + 1);
                 });
             }
 
