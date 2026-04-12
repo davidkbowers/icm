@@ -438,15 +438,17 @@
         .mileage-head {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 0.8rem;
             padding-bottom: 0.55rem;
+            padding-right: 2.2rem;
             border-bottom: 1px solid var(--border);
+            position: relative;
         }
 
         .mileage-head h3 {
             margin: 0;
-            font-size: 2.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
         }
 
@@ -458,6 +460,9 @@
             line-height: 1;
             cursor: pointer;
             padding: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
         }
 
         .panel-plus:hover {
