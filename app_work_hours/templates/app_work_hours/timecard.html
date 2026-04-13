@@ -3,820 +3,703 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICM Weekly Timecard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Modern Timesheet - ICM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-dark: #0f172a;
-            --bg-card: rgba(30, 41, 59, 0.7);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.5);
-            --border: rgba(255, 255, 255, 0.1);
-            --type-st: #10b981;
-            --radius-lg: 16px;
-            --radius-md: 8px;
-            --transition: all 0.25s ease;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Inter", sans-serif;
-        }
-
-        body {
-            background: var(--bg-dark);
-            background-image:
-                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 2.15rem;
-        }
-
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2rem 2.15rem;
-            border-radius: var(--radius-lg);
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-mark {
-            width: 56px;
-            height: 56px;
-            border-radius: 10px;
-            background: linear-gradient(145deg, #4f98ff, #2f6fdf);
-            box-shadow: 0 0 14px var(--accent-glow);
-            position: relative;
-        }
-
-        .logo-mark::before {
-            content: "";
-            position: absolute;
-            inset: 12px 10px;
-            background: rgba(255, 255, 255, 0.25);
-            clip-path: polygon(0 100%, 0 0, 35% 35%, 60% 20%, 60% 100%);
-        }
-
-        .brand-text h1 {
-            font-weight: 700;
-            font-size: 1.5rem;
-            line-height: 1.05;
-            letter-spacing: 1px;
-        }
-
-        .brand-text span {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1;
-        }
-
-        .employee-info {
-            display: flex;
-            gap: 3rem;
-            align-items: center;
-            margin-left: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .info-group label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-            display: block;
-        }
-
-        .info-value {
-            font-weight: 500;
-            font-size: 1.1rem;
-            line-height: 1.1;
-        }
-
-        .status-badge {
-            padding: 0.4rem 0.85rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            white-space: nowrap;
-        }
-
-        .main-content {
-            display: grid;
-            gap: 1.25rem;
-        }
-
-        .control-strip {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(220px, 1fr));
-            gap: 1rem;
-            max-width: 680px;
-        }
-
-        .field {
-            display: grid;
-            gap: 0.4rem;
-        }
-
-        .field label {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-        }
-
-        .field select,
-        .field input[type="date"] {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            padding: 0.68rem 0.75rem;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .info-group select,
-        .info-group input[type="date"] {
-            min-width: 240px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            padding: 0.5rem 0.65rem;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .field input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 1;
-            cursor: pointer;
-        }
-
-        .info-group input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 1;
-            cursor: pointer;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 0.9rem;
-            margin-bottom: 0.15rem;
-        }
-
-        .top-bar h2 {
-            font-weight: 500;
-            font-size: 1.4rem;
-            line-height: 1;
-        }
-
-        .top-actions {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            border: none;
-            padding: 0.86rem 1.45rem;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            font-size: 0.96rem;
-        }
-
-        #add-row-btn {
-            min-width: 168px;
-            justify-content: center;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: #2563eb;
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--text-muted);
-        }
-
-        .btn-secondary:hover {
-            color: var(--text-main);
-            border-color: var(--text-main);
-        }
-
-        .timesheet-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th,
-        td {
-            padding: 1.05rem 1rem;
-            border-bottom: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-        }
-
-        th:last-child,
-        td:last-child {
-            border-right: none;
-        }
-
-        th {
-            background: rgba(0, 0, 0, 0.2);
-            font-weight: 500;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-align: center;
-            padding-top: 1.35rem;
-            padding-bottom: 1.35rem;
-        }
-
-        .timesheet-card th,
-        .timesheet-card td {
-            padding: 0.6rem 0.5rem;
-        }
-
-        th.job-col {
-            text-align: left;
-            width: 24%;
-            font-size: 0.9rem;
-        }
-
-        .date-sub {
-            font-size: 0.75rem;
-            font-weight: 400;
-            opacity: 0.7;
-            margin-top: 0.25rem;
-            display: inline-block;
-        }
-
-        th.weekend {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        tbody tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        td.job-cell select {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            padding: 0.66rem 0.75rem;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .day-cell {
-            text-align: center;
-            padding: 0.36rem !important;
-            cursor: pointer;
-        }
-
-        .entry-pill {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 0.42rem;
-            width: 100%;
-            min-height: 54px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .hours-btn {
-            width: 100%;
-            border: none;
-            background: transparent;
-            color: var(--text-main);
-            cursor: pointer;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.15rem;
-        }
-
-        .hours-btn-hours {
-            font-size: 1.05rem;
-            font-weight: 600;
-            line-height: 1;
-        }
-
-        .entry-type {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            padding: 0.16rem 0.45rem;
-            border-radius: 4px;
-            margin-top: 0.05rem;
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--type-st);
-        }
-
-        .entry-pill.empty .hours-btn-hours {
-            color: var(--text-muted);
-            opacity: 0.7;
-        }
-
-        .entry-pill.empty {
-            display: none;
-        }
-
-        .entry-pill.empty .hours-btn {
-            justify-content: center;
-        }
-
-        .entry-pill.empty .entry-type {
-            display: none;
-        }
-
-        .row-total,
-        .row-total strong {
-            font-size: 2.7rem;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        tfoot td {
-            background: rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-            text-align: center;
-            font-size: 2.7rem;
-        }
-
-        tfoot td:first-child {
-            text-align: right;
-            padding-right: 2rem;
-        }
-
-        #grand-total {
-            color: var(--accent);
-        }
-
-        .footer-actions {
-            display: flex;
-            justify-content: flex-end;
-            padding: 1rem 0;
-        }
-
-        .status-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .bottom-panels {
-            display: grid;
-            grid-template-columns: minmax(620px, 1fr) minmax(360px, 0.85fr);
-            gap: 1rem;
-            align-items: start;
-        }
-
-        .mileage-card,
-        .allowance-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1rem 1.2rem;
-            backdrop-filter: blur(10px);
-        }
-
-        .mileage-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.55rem;
-            padding-right: 2.2rem;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-        }
-
-        .mileage-head h3 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .panel-plus {
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 2.6rem;
-            line-height: 1;
-            cursor: pointer;
-            padding: 0;
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-68%);
-        }
-
-        .panel-plus:hover {
-            color: var(--text-main);
-        }
-
-        .mileage-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .mileage-table th,
-        .mileage-table td {
-            border-bottom: 1px solid var(--border);
-            padding: 0.6rem 0.5rem;
-            text-align: left;
-            font-size: 1.05rem;
-        }
-
-        .mileage-table th {
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .mileage-table td input,
-        .mileage-table td select {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            padding: 0.5rem 0.6rem;
-            font-size: 1rem;
-        }
-
-        .mileage-totals {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1.25rem;
-            margin-top: 0.8rem;
-            color: var(--text-muted);
-            font-size: 0.92rem;
-        }
-
-        .allowance-head {
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.55rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .allowance-head h3 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .allowance-grid {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(42px, 1fr));
-            column-gap: 0.7rem;
-            row-gap: 0.35rem;
-            align-items: center;
-            justify-items: start;
-        }
-
-        .allowance-grid input[type="checkbox"] {
-            width: 28px;
-            height: 28px;
-            accent-color: var(--accent);
-        }
-
-        .allowance-grid label {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            text-transform: none;
-            letter-spacing: 0;
-            margin: 0;
-        }
-
-        .errors {
-            margin: 0;
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(248, 113, 113, 0.45);
-            background: rgba(127, 29, 29, 0.35);
-            color: #fecaca;
-        }
-
-        .small-error {
-            color: #fecaca;
-            font-size: 0.8rem;
-            margin-top: 0.35rem;
-            display: block;
-        }
-
-        input[name$="-DELETE"] {
-            display: none;
-        }
-
-        .signout {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-
-        .signout:hover {
-            color: var(--text-main);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(2, 8, 23, 0.7);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            width: min(92vw, 480px);
-            background: rgba(23, 36, 59, 0.92);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.7rem 1.9rem;
-            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-            transform: translateY(16px) scale(0.97);
-            transition: transform 0.25s ease;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .modal-head h3 {
-            font-size: 2.6rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.35rem;
-        }
-
-        .modal-sub {
-            color: var(--text-muted);
-            font-size: 1.9rem;
-        }
-
-        .close-btn {
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 2rem;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .hour-display {
-            text-align: center;
-            margin-bottom: 0.9rem;
-            font-size: 5rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-shadow: 0 0 18px var(--accent-glow);
-        }
-
-        .hour-display span {
-            color: var(--text-muted);
-            font-size: 3rem;
-            margin-left: 0.2rem;
-        }
-
-        .modal-slider {
-            width: 100%;
-            margin-bottom: 1.1rem;
-        }
-
-        .quick-hours {
-            display: flex;
-            justify-content: center;
-            gap: 0.7rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .quick-hours button {
-            border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-main);
-            min-width: 50px;
-            padding: 0.45rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.92rem;
-        }
-
-        .type-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.7rem;
-            margin-bottom: 1rem;
-        }
-
-        .type-btn {
-            border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-main);
-            padding: 0.72rem 0.5rem;
-            border-radius: 10px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .type-btn.active {
-            border-color: #10b981;
-            color: #10b981;
-            background: rgba(16, 185, 129, 0.16);
-        }
-
-        .modifier-wrap {
-            margin-bottom: 1.2rem;
-        }
-
-        .modifier-wrap label {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 0.4rem;
-            display: block;
-        }
-
-        .modifier-wrap select {
-            width: 100%;
-            background: rgba(10, 16, 29, 0.65);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.72rem 0.82rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.7rem;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
-
-        @media (max-width: 1300px) {
-            body {
-                padding: 1rem;
-            }
-
-            .brand-text h1 { font-size: 1.7rem; }
-            .top-bar h2 { font-size: 2rem; }
-            th { font-size: 0.85rem; }
-            .date-sub { font-size: 0.72rem; }
-            .entry-pill input[type="number"] { font-size: 1.2rem; }
-            .row-total, .row-total strong, tfoot td { font-size: 1rem; }
-
-            .employee-info {
-                gap: 1.5rem;
-            }
-
-            .timesheet-card {
-                overflow-x: auto;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .app-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .employee-info {
-                margin-left: 0;
-                gap: 1.25rem;
-            }
-
-            .control-strip {
-                grid-template-columns: 1fr;
-                max-width: 100%;
-            }
-
-            .top-bar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-
-            .bottom-panels {
-                grid-template-columns: 1fr;
-            }
-        }
+/* From index.css */
+:root {
+    --bg-dark: #0f172a; /* Slate 900 */
+    --bg-card: rgba(30, 41, 59, 0.7); /* Slate 800 */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6; /* Blue 500 */
+    --accent-glow: rgba(59, 130, 246, 0.5);
+    --border: rgba(255, 255, 255, 0.1);
+    
+    --type-st: #10b981; /* Emerald */
+    --type-ot: #f59e0b; /* Amber */
+    --type-dt: #ef4444; /* Red */
+    
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Glass effect utility */
+.glass-effect {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+.brand-text h1 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.brand-text span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.employee-info {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.info-group label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.info-value {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* Main Content */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.top-bar h2 {
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+.top-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    box-shadow: 0 0 15px var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--text-muted);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-secondary:hover {
+    color: var(--text-main);
+    border-color: var(--text-main);
+}
+
+/* Timesheet Grid */
+.timesheet-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.modern-table th, 
+.modern-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+}
+
+.modern-table th:last-child,
+.modern-table td:last-child {
+    border-right: none;
+}
+
+.modern-table th {
+    background: rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.modern-table th.job-col {
+    text-align: left;
+    width: 25%;
+}
+
+.date-sub {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+.modern-table th.weekend {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.modern-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.job-cell-content {
+    display: flex;
+    flex-direction: column;
+}
+.job-id {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+}
+.job-desc {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.day-cell {
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    padding: 0.5rem !important; /* tight padding for the interaction area */
+}
+
+.day-cell:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.day-cell.empty {
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.3;
+}
+
+.day-cell.empty:hover {
+    opacity: 1;
+}
+
+.entry-pill {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.4rem;
+    width: 100%;
+    min-height: 55px;
+    transition: var(--transition);
+}
+
+.day-cell:hover .entry-pill {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+}
+
+.entry-hours {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.entry-type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    margin-top: 0.2rem;
+}
+
+.type-st { background: rgba(16, 185, 129, 0.2); color: var(--type-st); }
+.type-ot { background: rgba(245, 158, 11, 0.2); color: var(--type-ot); }
+.type-dt { background: rgba(239, 68, 68, 0.2); color: var(--type-dt); }
+
+.daily-totals td {
+    background: rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    text-align: center;
+}
+.daily-totals td:first-child {
+    text-align: right;
+    padding-right: 2rem;
+}
+
+/* Bottom Panels */
+.bottom-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.panel-header h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+.btn-icon:hover { color: var(--accent); }
+
+.minimal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.minimal-table th, .minimal-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.minimal-table th { color: var(--text-muted); font-weight: 500; }
+
+.allowance-days {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.day-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+.day-checkbox input {
+    accent-color: var(--accent);
+    width: 18px;
+    height: 18px;
+}
+.day-checkbox span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.modifiers-key h4 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.tag {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    cursor: help;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem;
+    position: relative;
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.modal-header { margin-bottom: 2rem; }
+.modal-header h3 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.modal-header p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* Novel Input */
+.novel-time-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.time-display {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    line-height: 1;
+    text-shadow: 0 0 20px var(--accent-glow);
+}
+.time-display .unit {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-left: 0.2rem;
+}
+
+.slider-container {
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.styled-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    outline: none;
+}
+
+.styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-glow);
+    transition: transform 0.1s;
+}
+
+.styled-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.quick-hours {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-chip:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.time-type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.type-radio input { display: none; }
+.type-card {
+    text-align: center;
+    padding: 0.8rem 0.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.type-radio input:checked + .type-card {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.type-radio:nth-child(1) input:checked + .type-card { border-color: var(--type-st); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); color: var(--type-st); }
+.type-radio:nth-child(2) input:checked + .type-card { border-color: var(--type-ot); box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); color: var(--type-ot); }
+.type-radio:nth-child(3) input:checked + .type-card { border-color: var(--type-dt); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); color: var(--type-dt); }
+
+.modifier-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+.modifier-selector label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.styled-select {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    outline: none;
+    cursor: pointer;
+}
+.styled-select option {
+    background: var(--bg-card);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+}
+
+/* Extras needed for django template / forms */
+input[name$="-DELETE"] {
+    display: none;
+}
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    padding: 0.4rem 0.75rem;
+    font-size: 0.95rem;
+    outline: none;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+.small-error {
+    color: #fecaca;
+    font-size: 0.8rem;
+    margin-top: 0.35rem;
+    display: block;
+}
+.errors {
+    margin: 0 0 1rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(248, 113, 113, 0.45);
+    background: rgba(127, 29, 29, 0.35);
+    color: #fecaca;
+}
+.signout {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+.signout:hover {
+    color: var(--text-main);
+}
+.info-group select,
+.info-group input[type="date"] {
+    margin-top: 0;
+}
+.entry-pill.empty {
+    border-color: rgba(255,255,255,0.05);
+    background: transparent;
+}
+.entry-pill.empty .entry-hours {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+.entry-pill.empty .entry-type {
+    display: none;
+}
+.row-total {
+    text-align: center;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+@media (max-width: 1024px) {
+    .bottom-panels { grid-template-columns: 1fr; }
+    .modern-table { display: block; overflow-x: auto; }
+}
     </style>
 </head>
 <body>
-    <main class="app-container">
-        <form method="post" class="main-content">
-            {% csrf_token %}
-            {{ row_formset.management_form }}
-            {{ mileage_row_formset.management_form }}
-
+    <div class="app-container">
         <header class="app-header">
             <div class="brand">
-                <div class="logo-mark" aria-hidden="true"></div>
+                <i class="fa-solid fa-industry logo-icon"></i>
                 <div class="brand-text">
                     <h1>ICM</h1>
                     <span>Industrial Construction Managers</span>
                 </div>
             </div>
-
+            
             <div class="employee-info">
                 <div class="info-group">
                     <label>Employee</label>
-                    {{ form.employee }}
+                    <div class="info-value">{{ form.employee }}</div>
                     {% if form.employee.errors %}<small class="small-error">{{ form.employee.errors|striptags }}</small>{% endif %}
                 </div>
                 <div class="info-group">
                     <label>Period Ending</label>
-                    {{ form.week_start_date }}
+                    <div class="info-value">{{ form.week_start_date }}</div>
                     {% if form.week_start_date.errors %}<small class="small-error">{{ form.week_start_date.errors|striptags }}</small>{% endif %}
                 </div>
                 <div class="info-group">
                     <label>Status</label>
-                    <div class="status-badge">Approved by J. Bowers</div>
+                    <div class="status-badge approved">Approved by J. Bowers</div>
                 </div>
                 <a href="{% url 'home' %}" class="signout">Sign out</a>
             </div>
         </header>
 
+        <form method="post" class="main-content">
+            {% csrf_token %}
+            {{ row_formset.management_form }}
+            {{ mileage_row_formset.management_form }}
             {% if form.non_field_errors %}
                 <div class="errors">{{ form.non_field_errors }}</div>
             {% endif %}
@@ -830,48 +713,50 @@
             <div class="top-bar">
                 <h2>Timecard</h2>
                 <div class="top-actions">
-                    <button type="button" class="btn-primary" id="add-row-btn">+ Add Job</button>
+                    <button type="button" class="btn-primary" id="add-row-btn"><i class="fa-solid fa-plus"></i> Add Job</button>
                     <button type="submit" class="btn-primary">Save Weekly Timecard</button>
                 </div>
             </div>
 
+            <!-- Timesheet Grid -->
             <div class="timesheet-card">
-                <table>
+                <table class="modern-table">
                     <thead>
                         <tr>
                             <th class="job-col">Job / Phase / Category</th>
                             {% for day in day_headers %}
                                 <th class="{% if forloop.counter >= 6 %}weekend{% endif %}">
-                                    {{ day.label }}<br>
-                                    <span class="date-sub">{{ day.date }}</span>
+                                    {{ day.label }} <br><span class="date-sub">{{ day.date }}</span>
                                 </th>
                             {% endfor %}
-                            <th>Week Total</th>
+                            <th class="total-col">Week Total</th>
                         </tr>
                     </thead>
                     <tbody id="rows-body">
                         {% for row_form in row_formset %}
                             <tr>
                                 <td class="job-cell">
-                                    {{ row_form.job_number_phase_cat_desc }}
-                                    {{ row_form.DELETE }}
-                                    {% if row_form.job_number_phase_cat_desc.errors %}
-                                        <small class="small-error">{{ row_form.job_number_phase_cat_desc.errors|striptags }}</small>
-                                    {% endif %}
+                                    <div class="job-cell-content">
+                                        {{ row_form.job_number_phase_cat_desc }}
+                                        {{ row_form.DELETE }}
+                                        {% if row_form.job_number_phase_cat_desc.errors %}
+                                            <small class="small-error">{{ row_form.job_number_phase_cat_desc.errors|striptags }}</small>
+                                        {% endif %}
+                                    </div>
                                 </td>
-                                <td class="day-cell" data-day="mon"><div class="entry-pill">{{ row_form.mon.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                                <td class="day-cell" data-day="tue"><div class="entry-pill">{{ row_form.tue.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                                <td class="day-cell" data-day="wed"><div class="entry-pill">{{ row_form.wed.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                                <td class="day-cell" data-day="thu"><div class="entry-pill">{{ row_form.thu.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                                <td class="day-cell" data-day="fri"><div class="entry-pill">{{ row_form.fri.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                                <td class="day-cell" data-day="sat"><div class="entry-pill">{{ row_form.sat.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                                <td class="day-cell" data-day="sun"><div class="entry-pill">{{ row_form.sun.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                                <td class="day-cell" data-day="mon"><div class="entry-pill empty">{{ row_form.mon.as_hidden }}<span class="entry-hours">-</span></div></td>
+                                <td class="day-cell" data-day="tue"><div class="entry-pill empty">{{ row_form.tue.as_hidden }}<span class="entry-hours">-</span></div></td>
+                                <td class="day-cell" data-day="wed"><div class="entry-pill empty">{{ row_form.wed.as_hidden }}<span class="entry-hours">-</span></div></td>
+                                <td class="day-cell" data-day="thu"><div class="entry-pill empty">{{ row_form.thu.as_hidden }}<span class="entry-hours">-</span></div></td>
+                                <td class="day-cell" data-day="fri"><div class="entry-pill empty">{{ row_form.fri.as_hidden }}<span class="entry-hours">-</span></div></td>
+                                <td class="day-cell" data-day="sat"><div class="entry-pill empty">{{ row_form.sat.as_hidden }}<span class="entry-hours">-</span></div></td>
+                                <td class="day-cell" data-day="sun"><div class="entry-pill empty">{{ row_form.sun.as_hidden }}<span class="entry-hours">-</span></div></td>
                                 <td class="row-total"><strong class="row-total-value">0h</strong></td>
                             </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot>
-                        <tr>
+                        <tr class="daily-totals" id="daily-totals-row">
                             <td>Daily Totals:</td>
                             <td id="total-mon">{{ daily_totals.mon|default:0 }}h</td>
                             <td id="total-tue">{{ daily_totals.tue|default:0 }}h</td>
@@ -889,34 +774,35 @@
             <template id="empty-row-template">
                 <tr>
                     <td class="job-cell">
-                        {{ row_formset.empty_form.job_number_phase_cat_desc }}
-                        {{ row_formset.empty_form.DELETE }}
+                        <div class="job-cell-content">
+                            {{ row_formset.empty_form.job_number_phase_cat_desc }}
+                            {{ row_formset.empty_form.DELETE }}
+                        </div>
                     </td>
-                    <td class="day-cell" data-day="mon"><div class="entry-pill">{{ row_formset.empty_form.mon.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                    <td class="day-cell" data-day="tue"><div class="entry-pill">{{ row_formset.empty_form.tue.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                    <td class="day-cell" data-day="wed"><div class="entry-pill">{{ row_formset.empty_form.wed.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                    <td class="day-cell" data-day="thu"><div class="entry-pill">{{ row_formset.empty_form.thu.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                    <td class="day-cell" data-day="fri"><div class="entry-pill">{{ row_formset.empty_form.fri.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                    <td class="day-cell" data-day="sat"><div class="entry-pill">{{ row_formset.empty_form.sat.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
-                    <td class="day-cell" data-day="sun"><div class="entry-pill">{{ row_formset.empty_form.sun.as_hidden }}<button type="button" class="hours-btn"><span class="hours-btn-hours">0h</span><span class="entry-type">ST</span></button></div></td>
+                    <td class="day-cell" data-day="mon"><div class="entry-pill empty">{{ row_formset.empty_form.mon.as_hidden }}<span class="entry-hours">-</span></div></td>
+                    <td class="day-cell" data-day="tue"><div class="entry-pill empty">{{ row_formset.empty_form.tue.as_hidden }}<span class="entry-hours">-</span></div></td>
+                    <td class="day-cell" data-day="wed"><div class="entry-pill empty">{{ row_formset.empty_form.wed.as_hidden }}<span class="entry-hours">-</span></div></td>
+                    <td class="day-cell" data-day="thu"><div class="entry-pill empty">{{ row_formset.empty_form.thu.as_hidden }}<span class="entry-hours">-</span></div></td>
+                    <td class="day-cell" data-day="fri"><div class="entry-pill empty">{{ row_formset.empty_form.fri.as_hidden }}<span class="entry-hours">-</span></div></td>
+                    <td class="day-cell" data-day="sat"><div class="entry-pill empty">{{ row_formset.empty_form.sat.as_hidden }}<span class="entry-hours">-</span></div></td>
+                    <td class="day-cell" data-day="sun"><div class="entry-pill empty">{{ row_formset.empty_form.sun.as_hidden }}<span class="entry-hours">-</span></div></td>
                     <td class="row-total"><strong class="row-total-value">0h</strong></td>
                 </tr>
             </template>
 
             <div class="bottom-panels">
-                <section class="mileage-card">
-                    <div class="mileage-head">
+                <div class="panel mileage-panel">
+                    <div class="panel-header">
                         <h3>Mileage Reimbursement</h3>
-                        <button type="button" class="panel-plus" id="add-mileage-row-btn">+</button>
+                        <button type="button" class="btn-icon" id="add-mileage-row-btn"><i class="fa-solid fa-plus"></i></button>
                     </div>
-
-                    <table class="mileage-table">
+                    <table class="minimal-table">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Purpose</th>
                                 <th>Miles</th>
-                                <th>Amount</th>
+                                <th>Amount ($)</th>
                                 <th>Job</th>
                             </tr>
                         </thead>
@@ -936,7 +822,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-
                     <template id="empty-mileage-row-template">
                         <tr>
                             <td>{{ mileage_row_formset.empty_form.mileage_date }}</td>
@@ -946,85 +831,108 @@
                             <td>{{ mileage_row_formset.empty_form.job_number_phase_cat_desc }}{{ mileage_row_formset.empty_form.DELETE }}</td>
                         </tr>
                     </template>
-
-                    <div class="mileage-totals">
+                    
+                    <div class="mileage-totals" style="display: flex; justify-content: flex-end; gap: 1.25rem; margin-top: 0.8rem; color: var(--text-muted); font-size: 0.92rem;">
                         <span>Total Miles: <strong>{{ mileage_total_miles }}</strong></span>
                         <span>Total Amount: <strong>${{ mileage_total_amount }}</strong></span>
                     </div>
-                </section>
+                </div>
 
-                <section class="allowance-card">
-                    <div class="allowance-head">
+                <div class="panel allowance-panel">
+                    <div class="panel-header">
                         <h3>Auto Allowance</h3>
                     </div>
-                    <div class="allowance-grid">
-                        <input type="checkbox" id="auto-allowance-mon" name="auto_allowance_mon" {% if auto_allowance.mon %}checked{% endif %}>
-                        <input type="checkbox" id="auto-allowance-tue" name="auto_allowance_tue" {% if auto_allowance.tue %}checked{% endif %}>
-                        <input type="checkbox" id="auto-allowance-wed" name="auto_allowance_wed" {% if auto_allowance.wed %}checked{% endif %}>
-                        <input type="checkbox" id="auto-allowance-thu" name="auto_allowance_thu" {% if auto_allowance.thu %}checked{% endif %}>
-                        <input type="checkbox" id="auto-allowance-fri" name="auto_allowance_fri" {% if auto_allowance.fri %}checked{% endif %}>
-                        <input type="checkbox" id="auto-allowance-sat" name="auto_allowance_sat" {% if auto_allowance.sat %}checked{% endif %}>
-                        <input type="checkbox" id="auto-allowance-sun" name="auto_allowance_sun" {% if auto_allowance.sun %}checked{% endif %}>
-
-                        <label for="auto-allowance-mon">Mon</label>
-                        <label for="auto-allowance-tue">Tue</label>
-                        <label for="auto-allowance-wed">Wed</label>
-                        <label for="auto-allowance-thu">Thu</label>
-                        <label for="auto-allowance-fri">Fri</label>
-                        <label for="auto-allowance-sat">Sat</label>
-                        <label for="auto-allowance-sun">Sun</label>
+                    <div class="allowance-days">
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-mon" name="auto_allowance_mon" {% if auto_allowance.mon %}checked{% endif %}><span>Mon</span></label>
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-tue" name="auto_allowance_tue" {% if auto_allowance.tue %}checked{% endif %}><span>Tue</span></label>
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-wed" name="auto_allowance_wed" {% if auto_allowance.wed %}checked{% endif %}><span>Wed</span></label>
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-thu" name="auto_allowance_thu" {% if auto_allowance.thu %}checked{% endif %}><span>Thu</span></label>
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-fri" name="auto_allowance_fri" {% if auto_allowance.fri %}checked{% endif %}><span>Fri</span></label>
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-sat" name="auto_allowance_sat" {% if auto_allowance.sat %}checked{% endif %}><span>Sat</span></label>
+                        <label class="day-checkbox"><input type="checkbox" id="auto-allowance-sun" name="auto_allowance_sun" {% if auto_allowance.sun %}checked{% endif %}><span>Sun</span></label>
                     </div>
-                </section>
-            </div>
-
-        </form>
-    </main>
-
-    <div class="modal-overlay" id="hours-modal">
-        <div class="modal-content">
-            <div class="modal-head">
-                <div>
-                    <h3>Log Time</h3>
-                    <div class="modal-sub" id="modal-subtitle">-</div>
+                    
+                    <div class="modifiers-key">
+                        <h4>Rate Modifiers Key</h4>
+                        <div class="tags">
+                            <span class="tag" title="Per Diem">PD$$</span>
+                            <span class="tag" title="Night Shift Differential">SD</span>
+                            <span class="tag" title="Hazardous Pay / Confined Space">HZ/CS</span>
+                            <span class="tag" title="Above scale">FMKF</span>
+                            <span class="tag" title="Pipefitter Local #56">PF56</span>
+                            <span class="tag" title="Pipefitter Local #208">PF208</span>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" class="close-btn" id="close-hours-modal">x</button>
             </div>
+        </form>
+    </div>
 
-            <div class="hour-display"><span id="modal-hours-value">0</span><span>h</span></div>
-            <input class="modal-slider" type="range" min="0" max="24" step="1" value="0" id="modal-hours-slider">
-
-            <div class="quick-hours">
-                <button type="button" class="quick-add" data-add="1">+1</button>
-                <button type="button" class="quick-add" data-add="2">+2</button>
-                <button type="button" class="quick-add" data-add="4">+4</button>
-                <button type="button" class="quick-add" data-add="8">+8</button>
+    <!-- The Novel Input Modal -->
+    <div class="modal-overlay" id="hours-modal">
+        <div class="modal-content glass-effect">
+            <button type="button" class="close-btn" id="close-hours-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h3>Log Time</h3>
+                <p id="modal-subtitle">-</p>
             </div>
+            
+            <div class="modal-body">
+                <!-- Novel Slider Input -->
+                <div class="novel-time-input">
+                    <div class="time-display">
+                        <span id="modal-hours-value">0</span><span class="unit">h</span>
+                    </div>
+                    
+                    <div class="slider-container">
+                         <input type="range" id="modal-hours-slider" min="0" max="24" step="1" value="0" class="styled-slider">
+                    </div>
+                    <div class="quick-hours">
+                        <button type="button" class="btn-chip quick-add" data-add="1">+1</button>
+                        <button type="button" class="btn-chip quick-add" data-add="2">+2</button>
+                        <button type="button" class="btn-chip quick-add" data-add="4">+4</button>
+                        <button type="button" class="btn-chip quick-add" data-add="8">+8</button>
+                    </div>
+                </div>
 
-            <div class="type-grid" id="type-grid">
-                <button type="button" class="type-btn active" data-type="ST">Straight Time (ST)</button>
-                <button type="button" class="type-btn" data-type="OT">Overtime (OT)</button>
-                <button type="button" class="type-btn" data-type="DT">Double Time (DT)</button>
+                <div class="time-type-selector" id="type-grid">
+                    <label class="type-radio">
+                        <input type="radio" name="timeType" value="ST" class="type-btn" checked>
+                        <div class="type-card" data-type="ST">Straight Time<br>(ST)</div>
+                    </label>
+                    <label class="type-radio">
+                        <input type="radio" name="timeType" value="OT" class="type-btn">
+                        <div class="type-card" data-type="OT">Overtime<br>(OT)</div>
+                    </label>
+                    <label class="type-radio">
+                        <input type="radio" name="timeType" value="DT" class="type-btn">
+                        <div class="type-card" data-type="DT">Double Time<br>(DT)</div>
+                    </label>
+                </div>
+
+                <div class="modifier-selector">
+                    <label>Modifier</label>
+                    <select id="modifier-select" class="styled-select">
+                        <option value="">None</option>
+                        <option value="PD$$">PD$$ - Per Diem</option>
+                        <option value="SD">SD - Night Shift</option>
+                        <option value="HZ/CS">HZ/CS - Hazardous/Confined Space</option>
+                        <option value="FMKF">FMKF - Above Scale</option>
+                        <option value="PF56">PF56 - Local #56</option>
+                        <option value="PF208">PF208 - Local #208</option>
+                    </select>
+                </div>
             </div>
-
-            <div class="modifier-wrap">
-                <label for="modifier-select">Modifier</label>
-                <select id="modifier-select">
-                    <option value="">None</option>
-                    <option value="PD$$">PD$$ - Per Diem</option>
-                    <option value="SD">SD - Night Shift</option>
-                    <option value="HZ/CS">HZ/CS - Hazardous/Confined Space</option>
-                    <option value="FMKF">FMKF - Above Scale</option>
-                    <option value="PF56">PF56 - Local #56</option>
-                    <option value="PF208">PF208 - Local #208</option>
-                </select>
-            </div>
-
-            <div class="modal-actions">
+            
+            <div class="modal-footer">
                 <button type="button" class="btn-secondary" id="clear-hours-btn">Clear Day</button>
-                <button type="button" class="btn-primary" id="save-hours-btn">Save Entry</button>
+                <button type="button" class="btn-primary" id="save-hours-btn">Save Entry <i class="fa-solid fa-check"></i></button>
             </div>
         </div>
     </div>
+
+    <!-- Confirmation Toast -->
+    <div id="toast" class="toast" style="display:none; position: fixed; bottom: 2rem; right: 2rem; background: #10b981; color: white; padding: 1rem 2rem; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); z-index: 2000;">Entry Saved!</div>
 
     <script>
         (function () {
@@ -1032,30 +940,29 @@
             const rowsBody = document.getElementById("rows-body");
             const totalFormsInput = document.getElementById("id_rows-TOTAL_FORMS");
             const emptyRowTemplate = document.getElementById("empty-row-template");
+            
             const addMileageRowBtn = document.getElementById("add-mileage-row-btn");
             const mileageRowsBody = document.getElementById("mileage-rows-body");
             const mileageTotalFormsInput = document.getElementById("id_mileage_rows-TOTAL_FORMS");
             const emptyMileageRowTemplate = document.getElementById("empty-mileage-row-template");
+            
             const hoursModal = document.getElementById("hours-modal");
             const closeHoursModalBtn = document.getElementById("close-hours-modal");
             const clearHoursBtn = document.getElementById("clear-hours-btn");
             const saveHoursBtn = document.getElementById("save-hours-btn");
+            
             const modalHoursSlider = document.getElementById("modal-hours-slider");
             const modalHoursValue = document.getElementById("modal-hours-value");
             const modalSubtitle = document.getElementById("modal-subtitle");
             const quickAddButtons = document.querySelectorAll(".quick-add");
-            const typeButtons = document.querySelectorAll(".type-btn");
             const modifierSelect = document.getElementById("modifier-select");
+            const typeRadios = document.querySelectorAll("input[name='timeType']");
+
             const dayFields = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
             const dayLabels = {
-                mon: "Mon",
-                tue: "Tue",
-                wed: "Wed",
-                thu: "Thu",
-                fri: "Fri",
-                sat: "Sat",
-                sun: "Sun",
+                mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun"
             };
+            
             let activeDayInput = null;
             let activeType = "ST";
 
@@ -1066,46 +973,54 @@
 
             function setActiveType(typeValue) {
                 activeType = typeValue || "ST";
-                typeButtons.forEach(function (button) {
-                    button.classList.toggle("active", button.dataset.type === activeType);
+                typeRadios.forEach(function (radio) {
+                    radio.checked = (radio.value === activeType);
                 });
             }
 
+            typeRadios.forEach(function (radio) {
+                radio.addEventListener("change", function () {
+                    if (radio.checked) {
+                        activeType = radio.value;
+                    }
+                });
+            });
+
             function syncCellVisual(input) {
-                if (!input) {
-                    return;
-                }
+                if (!input) return;
                 const cell = input.closest("td.day-cell");
-                if (!cell) {
-                    return;
-                }
+                if (!cell) return;
 
                 const pill = cell.querySelector(".entry-pill");
-                const hoursLabel = cell.querySelector(".hours-btn-hours");
-                const typeLabel = cell.querySelector(".entry-type");
+                const hoursLabel = cell.querySelector(".entry-hours");
+                let typeLabel = cell.querySelector(".entry-type");
+                
                 const hours = toInt(input.value);
+                const currentType = input.dataset.entryType || "ST";
 
                 if (hours > 0) {
                     hoursLabel.textContent = hours + "h";
-                    if (pill) {
-                        pill.classList.remove("empty");
+                    pill.classList.remove("empty");
+                    
+                    if (!typeLabel) {
+                        typeLabel = document.createElement("span");
+                        typeLabel.className = "entry-type";
+                        pill.appendChild(typeLabel);
                     }
+                    typeLabel.textContent = currentType;
+                    typeLabel.className = "entry-type type-" + currentType.toLowerCase();
+                    
                 } else {
                     hoursLabel.textContent = "-";
-                    if (pill) {
-                        pill.classList.add("empty");
+                    pill.classList.add("empty");
+                    if (typeLabel) {
+                        typeLabel.remove();
                     }
-                }
-
-                if (typeLabel) {
-                    typeLabel.textContent = input.dataset.entryType || "ST";
                 }
             }
 
             function syncAllCellVisuals() {
-                rowsBody.querySelectorAll("td.day-cell input[type='hidden']").forEach(function (input) {
-                    syncCellVisual(input);
-                });
+                rowsBody.querySelectorAll("td.day-cell input[type='hidden']").forEach(syncCellVisual);
             }
 
             function openHoursModal(input) {
@@ -1117,7 +1032,18 @@
                 setActiveType(input.dataset.entryType || "ST");
 
                 const day = input.closest("td.day-cell") ? input.closest("td.day-cell").dataset.day : "";
-                modalSubtitle.textContent = "- " + (dayLabels[day] || "Day");
+                
+                let jobText = "Job";
+                const rowTr = input.closest("tr");
+                if (rowTr) {
+                    const jobSelect = rowTr.querySelector("select[name^='rows-'][name$='-job_number_phase_cat_desc']");
+                    if (jobSelect && jobSelect.options.length > 0 && jobSelect.selectedIndex > -1) {
+                        jobText = jobSelect.options[jobSelect.selectedIndex].text;
+                        if (jobText === "---------") jobText = "Unassigned Job";
+                    }
+                }
+                
+                modalSubtitle.textContent = jobText + " - " + (dayLabels[day] || "Day");
 
                 hoursModal.classList.add("active");
             }
@@ -1128,15 +1054,7 @@
             }
 
             function updateTotals() {
-                const dayTotals = {
-                    mon: 0,
-                    tue: 0,
-                    wed: 0,
-                    thu: 0,
-                    fri: 0,
-                    sat: 0,
-                    sun: 0,
-                };
+                const dayTotals = { mon: 0, tue: 0, wed: 0, thu: 0, fri: 0, sat: 0, sun: 0 };
                 let grandTotal = 0;
 
                 rowsBody.querySelectorAll("tr").forEach(function (row) {
@@ -1190,13 +1108,9 @@
 
             rowsBody.addEventListener("click", function (event) {
                 const cell = event.target.closest("td.day-cell");
-                if (!cell) {
-                    return;
-                }
+                if (!cell) return;
                 const targetInput = cell.querySelector("input[type='hidden']");
-                if (!targetInput) {
-                    return;
-                }
+                if (!targetInput) return;
                 openHoursModal(targetInput);
             });
 
@@ -1213,16 +1127,8 @@
                 });
             });
 
-            typeButtons.forEach(function (button) {
-                button.addEventListener("click", function () {
-                    setActiveType(button.dataset.type || "ST");
-                });
-            });
-
             saveHoursBtn.addEventListener("click", function () {
-                if (!activeDayInput) {
-                    return;
-                }
+                if (!activeDayInput) return;
                 activeDayInput.value = String(toInt(modalHoursSlider.value));
                 activeDayInput.dataset.entryType = activeType;
                 activeDayInput.dataset.modifier = modifierSelect.value || "";
@@ -1232,9 +1138,7 @@
             });
 
             clearHoursBtn.addEventListener("click", function () {
-                if (!activeDayInput) {
-                    return;
-                }
+                if (!activeDayInput) return;
                 activeDayInput.value = "0";
                 activeDayInput.dataset.entryType = "ST";
                 activeDayInput.dataset.modifier = "";
