@@ -337,9 +337,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
 }
 
 .panel-header h3 {
@@ -360,19 +360,54 @@ body {
 .minimal-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 .minimal-table th, .minimal-table td {
-    padding: 0.5rem;
+    padding: 0.75rem 0.5rem;
     text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.minimal-table th { color: var(--text-muted); font-weight: 500; }
+.minimal-table th { 
+    color: var(--text-muted); 
+    font-weight: 500; 
+    border-bottom: none;
+    padding-bottom: 1rem;
+}
+.minimal-table tr:last-child td {
+    border-bottom: none;
+}
+.minimal-table input[type="text"],
+.minimal-table input[type="number"],
+.minimal-table input[type="date"],
+.minimal-table select {
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 0.25rem;
+    margin: -0.25rem 0;
+    color: var(--text-main);
+    font-size: inherit;
+    box-shadow: none;
+    width: 100%;
+    transition: all 0.2s;
+}
+.minimal-table input:hover,
+.minimal-table select:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+}
+.minimal-table input:focus,
+.minimal-table select:focus {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--border);
+    border-radius: var(--radius-md);
+    outline: none;
+}
 
 .allowance-days {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 1.25rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
 .day-checkbox {
@@ -383,19 +418,40 @@ body {
     cursor: pointer;
 }
 .day-checkbox input {
-    accent-color: var(--accent);
-    width: 18px;
-    height: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background: var(--text-main);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    border: none;
+}
+.day-checkbox input:checked {
+    background: var(--accent);
+}
+.day-checkbox input:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 8px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 .day-checkbox span {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
 }
 
 .modifiers-key h4 {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 .tags {
     display: flex;
@@ -403,12 +459,18 @@ body {
     gap: 0.5rem;
 }
 .tag {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border);
-    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.35rem 0.85rem;
     border-radius: var(--radius-md);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-main);
     cursor: help;
+    transition: all 0.2s;
+}
+.tag:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* Modals */
