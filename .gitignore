@@ -1,6 +1,1 @@
-*.pyc
-*.PYC
-**/Migrations/
-*.sqlite3
-*.sqlite
-~*
+*cpython*
